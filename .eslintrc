@@ -17,7 +17,7 @@
   },
   "rules": {
     "quotes": 0,
-    "indent": [2, "tab"],
+    "indent": [2, "tab", {"SwitchCase": 1}],
     "no-console": 0,
     "no-debugger": 1,
     "no-var": 1,

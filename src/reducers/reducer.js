@@ -4,14 +4,14 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
 	switch (action.type) {
-	case "SET_GREETING_TEXT":
-		return Object.assign(
-			{}, 
-			state,
-			{ greetingText: action.text }
-		);
+		case "SET_GREETING_TEXT":
+			return Object.assign(
+				{}, 
+				state,
+				{ greetingText: action.text }
+			);
 
-	default:
-		return state;
+		default:
+			return state;
 	}
 }
