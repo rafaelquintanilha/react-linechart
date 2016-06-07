@@ -2,6 +2,7 @@
   "name": "react-linechart",
   "version": "1.0.1",
   "description": "Highly customizable line chart with React",
+  "main": "dist/bundle.js",
   "scripts": {
     "prestart": "npm run remove-dist",
     "start": "npm-run-all --parallel lint:tools test:watch open:src",
