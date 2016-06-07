@@ -43,7 +43,9 @@ const getEntry = function (env) {
 		entry.push('webpack-hot-middleware/client?reload=true');
 	}
 
-	entry.push('./src/index');
+	// entry.push('./src/index');
+
+	entry.push('./src/containers/AppContainer.js');
 
 	return entry;
 };
@@ -72,12 +74,24 @@ function getConfig(env) {
 		output: {
 			path: __dirname + '/dist', // Note: Physical files are only output by the production build task `npm run build`.
 			publicPath: '/',
-			filename: 'bundle.js'
+			filename: 'bundle.js',			
+			libraryTarget: 'umd'
 		},
 		plugins: getPlugins(env),
 		module: {
 			loaders: getLoaders(env)
-		}
+		},
+		externals: [
+			{
+				'react': {
+					root: 'React',
+					commonjs2: 'react',
+					commonjs: 'react',
+					amd: 'react'
+				},
+				'react-dom': 'react-dom'
+			}
+		],
 	};
 }
 

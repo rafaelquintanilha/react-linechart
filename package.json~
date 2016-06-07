@@ -1,7 +1,7 @@
 {
-  "name": "simple-frontend-boilerplate",
-  "version": "1.0.0",
-  "description": "Simple boilerplate with React, Redux, Mocha, ESlint based on React Slinghsot",
+  "name": "react-linechart",
+  "version": "0.1",
+  "description": "Highly customizable line chart with React",
   "scripts": {
     "prestart": "npm run remove-dist",
     "start": "npm-run-all --parallel lint:tools test:watch open:src",
@@ -66,19 +66,13 @@
     "react",
     "reactjs",
     "react-router",
-    "hot",
-    "reload",
-    "hmr",
-    "live",
-    "edit",
-    "webpack",
-    "redux",
-    "flux",
-    "boilerplate",
-    "starter"
+    "d3",
+    "linechart",
+    "line-chart",
+    "chart"
   ],
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/rafaelquintanilha/simple-frontend-boilerplate"
+    "url": "https://github.com/rafaelquintanilha/react-linechart"
   }
 }

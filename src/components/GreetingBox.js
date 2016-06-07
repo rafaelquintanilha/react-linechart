@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-export default class App extends React.Component {
+export default class GreetingBox extends React.Component {
 	
 	handleChange(e) {
 		const value = e.target.value;
@@ -18,7 +18,7 @@ export default class App extends React.Component {
 	}
 }
 
-App.propTypes = {
+GreetingBox.propTypes = {
 	greetingText: PropTypes.string.isRequired,
 	setGreetingText: PropTypes.func.isRequired
 };

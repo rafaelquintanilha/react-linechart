@@ -1,31 +1,25 @@
 {
   "name": "react-linechart",
-  "version": "0.1",
+  "version": "1.0.0",
   "description": "Highly customizable line chart with React",
   "scripts": {
     "prestart": "npm run remove-dist",
     "start": "npm-run-all --parallel lint:tools test:watch open:src",
     "open:src": "babel-node tools/srcServer.js",
-    "open:dist": "babel-node tools/distServer.js",
     "lint:tools": "eslint webpack.config.js tools",
     "clean-dist": "npm run remove-dist && mkdir dist",
     "remove-dist": "node_modules/.bin/rimraf ./dist",
-    "build:html": "babel-node tools/buildHtml.js",
     "build:js": "babel-node tools/build.js ",
     "prebuild": "npm run clean-dist",
-    "build": "npm-run-all --parallel test build:html build:js",
-    "postbuild": "npm run open:dist",
+    "build": "npm-run-all --parallel test build:js",
     "test": "cross-env NODE_ENV=test mocha --reporter progress --compilers js:babel-core/register --recursive \"./src/**/*.spec.js\" --require ignore-styles",
     "test:watch": "npm run test -- --watch"
   },
   "author": "Rafael Quintanilha",
   "license": "MIT",
   "dependencies": {
-    "object-assign": "4.0.1",
-    "react": "0.14.7",
-    "react-dom": "0.14.7",
-    "react-redux": "4.4.0",
-    "redux": "3.3.1"
+    "react": "15.0.1",
+    "react-dom": "15.0.1"
   },
   "devDependencies": {
     "babel-cli": "6.5.1",
@@ -57,7 +51,7 @@
     "rimraf": "2.5.0",
     "sass-loader": "3.1.2",
     "style-loader": "0.13.0",
-    "webpack": "1.12.11",
+    "webpack": "1.13.1",
     "webpack-dev-middleware": "1.4.0",
     "webpack-hot-middleware": "2.6.0",
     "yargs": "3.32.0"

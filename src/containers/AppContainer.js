@@ -1,38 +1,23 @@
-import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import * as actions from '../actions/actions';
-import App from '../components/App';
+import React, { Component } from 'react';
+import GreetingBox from '../components/GreetingBox';
 
-class AppContainer extends Component {
+class GreetingBoxComponent extends Component {
 
-	static propTypes = {
-		actions: PropTypes.object.isRequired,
-		state: PropTypes.object.isRequired
-	};
+	constructor(props) {
+		super(props);
+		this.state = { greetingText: "Hello, friend!" };
+	}
+
+	setGreetingText(text) {
+		this.setState({ greetingText: text });
+	}
 	
 	render() {
-		const { greetingText } = this.props.state;
-		const { setGreetingText } = this.props.actions;
+		const { greetingText } = this.state;		
 		return (
-			<App greetingText={greetingText} setGreetingText={setGreetingText} />
+			<GreetingBox greetingText={greetingText} setGreetingText={this.setGreetingText.bind(this)} />
 		);
 	}
 }
 
-function mapStateToProps(state) {
-	return {
-		state: state.reducer
-	};
-}
-
-function mapDispatchToProps(dispatch) {
-	return {
-		actions: bindActionCreators(actions, dispatch)
-	};
-}
-
-export default connect(
-	mapStateToProps,
-	mapDispatchToProps
-)(AppContainer);
+export default GreetingBoxComponent;
