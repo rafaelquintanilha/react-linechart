@@ -5,7 +5,7 @@ class GreetingBoxComponent extends Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { greetingText: "Hello, friend!" };
+		this.state = { greetingText: "Hello, ol' friend!" };
 	}
 
 	setGreetingText(text) {
