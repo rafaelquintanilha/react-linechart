@@ -1,6 +1,6 @@
-import React, { PropTypes } from 'react';
+import React, { PropTypes, Component } from 'react';
 
-export default class GreetingBox extends React.Component {
+export default class GreetingBox extends Component {
 	
 	handleChange(e) {
 		const value = e.target.value;

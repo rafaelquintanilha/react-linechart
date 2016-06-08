@@ -43,16 +43,20 @@ const getEntry = function (env) {
 		entry.push('webpack-hot-middleware/client?reload=true');
 	}
 
-	// entry.push('./src/index');
-
-	entry.push('./src/containers/AppContainer.js');
+	if (env === productionEnvironment ) { 
+		entry.push('./src/containers/GreetingBoxComponent.js');
+	} else {
+		entry.push('./src/index');
+	}
 
 	return entry;
 };
 
 const getLoaders = function (env) {
-	const loaders = [{ test: /\.js$/, include: path.join(__dirname, 'src'), loaders: ['babel', 'eslint'] },
-									{ test: /\.(jpe?g|png|gif|svg)$/i, loaders: ['file']}];
+	const loaders = [
+		{ test: /\.js$/, include: path.join(__dirname, 'src'), loaders: ['babel', 'eslint'] },
+		{ test: /\.(jpe?g|png|gif|svg)$/i, loaders: ['file'] }
+	];
 
 	if (env === productionEnvironment ) {
 		// generate separate physical stylesheet for production build using ExtractTextPlugin. This provides separate caching and avoids a flash of unstyled content on load.
@@ -71,27 +75,27 @@ function getConfig(env) {
 		noInfo: true, // set to false to see a list of every file being bundled.
 		entry: getEntry(env),
 		target: env === testEnvironment ? 'node' : 'web', // necessary per https://webpack.github.io/docs/testing.html#compile-and-test
-		output: {
-			path: __dirname + '/dist', // Note: Physical files are only output by the production build task `npm run build`.
-			publicPath: '/',
-			filename: 'bundle.js',			
-			libraryTarget: 'umd'
-		},
-		plugins: getPlugins(env),
-		module: {
-			loaders: getLoaders(env)
-		},
 		externals: [
 			{
-				'react': {
+				react: {
 					root: 'React',
 					commonjs2: 'react',
 					commonjs: 'react',
 					amd: 'react'
 				},
-				'react-dom': 'react-dom'
+				'react-dom': 'ReactDOM'
 			}
 		],
+		output: {
+			path: __dirname + '/dist', // Note: Physical files are only output by the production build task `npm run build`.
+			publicPath: '/',
+			filename: 'bundle.js',			
+			libraryTarget: 'umd'			
+		},
+		plugins: getPlugins(env),
+		module: {
+			loaders: getLoaders(env)
+		}		
 	};
 }
 
