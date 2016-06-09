@@ -1,9 +1,9 @@
 import React from 'react';
 import { render } from 'react-dom';
-import GreetingBoxComponent from './containers/GreetingBoxComponent'; 
+import App from './containers/App'; 
 
 import './styles/styles.scss';
 
 render(
-    <GreetingBoxComponent />, document.getElementById('app')
+    <App />, document.getElementById('app')
 );

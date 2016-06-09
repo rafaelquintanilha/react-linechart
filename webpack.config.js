@@ -44,7 +44,7 @@ const getEntry = function (env) {
 	}
 
 	if (env === productionEnvironment ) { 
-		entry.push('./src/containers/GreetingBoxComponent.js');
+		entry.push('./src/containers/LineChart.js');
 	} else {
 		entry.push('./src/index');
 	}
