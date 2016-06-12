@@ -18,6 +18,9 @@ class LineChart extends Component {
 		// Interpolation function
 		this.INTERPOLATE = this.props.interpolate || "cardinal";
 
+		// Define if we should draw lines connecting dots		
+		this.DRAW_LINES = this.props.drawLines || this.props.drawLines === undefined;		
+
 		// D3 functions for parsing and displaying
 		// Refer to: https://github.com/d3/d3/wiki/Time-Formatting
 		this.xParser = this.props.xParser || (this.props.isDate ? d3.time.format("%Y-%M-%d").parse : identity);
@@ -58,18 +61,49 @@ class LineChart extends Component {
 			.attr("transform", "translate(" + (this.MARGINS.left) + ",0)")
 			.call(yAxis);
 
+		// Insert label for each axis
 		vis.append("text")
-			.attr("text-anchor", "middle")
-			.attr("font-weight", "bold")  
-			.attr("transform", "translate(" + (this.MARGINS.left * 0.35) + "," +(this.HEIGHT/2) + ")rotate(-90)")
-			.attr("margin-right", "10px")
+			.attr("class", "label-text")
+			.attr("transform", `translate(${this.WIDTH / 2}, ${this.HEIGHT - 0.25 * this.MARGINS.bottom})`)			
+			.text(this.props.data.label.x);
+
+		vis.append("text")
+			.attr("class", "label-text")
+			.attr("transform", `translate(${this.MARGINS.left * 0.35}, ${this.HEIGHT/2})rotate(-90)`)			
 			.text(this.props.data.label.y);
 
 		vis.append("text")
-			.attr("text-anchor", "middle")
-			.attr("font-weight", "bold")
-			.attr("transform", "translate("+ (this.WIDTH / 2) +","+(this.HEIGHT-(this.MARGINS.bottom * 0.25))+")")
-			.text(this.props.data.label.x);
+			.attr("font-size", "13px")			
+			.attr("transform", `translate(${this.MARGINS.left + 20 + 25}, ${this.MARGINS.top})`)			
+			.text("Global");
+
+		vis.append("rect")
+			.attr("width", "20")			
+			.attr("height", "8")
+			.attr("fill", "blue")
+			.attr("transform", `translate(${this.MARGINS.left + 20}, ${this.MARGINS.top - 8})`)
+
+		vis.append("text")
+			.attr("font-size", "13px")			
+			.attr("transform", `translate(${this.MARGINS.left + 20 + 25}, ${this.MARGINS.top + 15})`)			
+			.text("North Hem.");
+
+		vis.append("rect")
+			.attr("width", "20")			
+			.attr("height", "8")
+			.attr("fill", "red")
+			.attr("transform", `translate(${this.MARGINS.left + 20}, ${this.MARGINS.top - 8 + 15})`)
+
+		vis.append("text")
+			.attr("font-size", "13px")			
+			.attr("transform", `translate(${this.MARGINS.left + 20 + 25}, ${this.MARGINS.top + 15 + 15})`)			
+			.text("South Hem.");
+
+		vis.append("rect")
+			.attr("width", "20")			
+			.attr("height", "8")
+			.attr("fill", "green")
+			.attr("transform", `translate(${this.MARGINS.left + 20}, ${this.MARGINS.top - 8 + 15 + 15})`)		
 
 		// Define function that will generate the lines
 		return d3.svg.line()
@@ -81,13 +115,16 @@ class LineChart extends Component {
 	generateLines(lineGen) {
 		const vis = d3.select(`#${this.props.id}`);
 		this.props.data.lines.map((line, i) => {
-			vis.append("svg:g")
-				.attr("class", "line")				
-				.append('path')
-					.attr('d', lineGen(line.points))
-					.attr('stroke', line.color)
-					.attr('stroke-width', 2)
-					.attr('fill', 'none');
+
+			if ( this.DRAW_LINES ) {
+				vis.append("svg:g")
+					.attr("class", "line")				
+					.append('path')
+						.attr('d', lineGen(line.points))
+						.attr('stroke', line.color)
+						.attr('stroke-width', 2)
+						.attr('fill', 'none');
+			}
 
 			if ( !this.props.showPoints ) return;
 
@@ -147,6 +184,7 @@ LineChart.propTypes = {
 	yMax: PropTypes.number,
 	isDate: PropTypes.bool,
 	showPoints: PropTypes.bool,
+	drawLines: PropTypes.bool,
 	xParser: PropTypes.func,
 	xDisplay: PropTypes.func,
 	interpolate: PropTypes.string

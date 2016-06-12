@@ -11,7 +11,7 @@ export default class App extends Component {
 
 	constructor(props) {
 		super(props);
-		
+
 		const gsmData = dataParser();
 
 		this.state = { gsmData, monthlyData };
@@ -35,7 +35,7 @@ export default class App extends Component {
 					width="1000"
 					height="400"					
 					interpolate="cardinal"
-					yMin={-100}
+					yMin={-100}					
 					yMax={100}					
 					isDate={false}
 					data={gsmData} />				
