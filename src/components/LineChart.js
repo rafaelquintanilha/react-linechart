@@ -8,7 +8,7 @@ class LineChart extends Component {
 		super(props);
 		
 		// Define width, height and margin where the visualization will be displayed
-		this.MARGINS = props.margins || { top: 30, right: 20, bottom: 30, left: 50 };
+		this.MARGINS = props.margins || { top: 50, right: 20, bottom: 50, left: 55 };
 		this.WIDTH = parseFloat(props.width) || 1024;
 		this.HEIGHT = parseFloat(props.height) || 720;
 
@@ -58,6 +58,19 @@ class LineChart extends Component {
 			.attr("transform", "translate(" + (this.MARGINS.left) + ",0)")
 			.call(yAxis);
 
+		vis.append("text")
+			.attr("text-anchor", "middle")
+			.attr("font-weight", "bold")  
+			.attr("transform", "translate(" + (this.MARGINS.left * 0.35) + "," +(this.HEIGHT/2) + ")rotate(-90)")
+			.attr("margin-right", "10px")
+			.text(this.props.data.label.y);
+
+		vis.append("text")
+			.attr("text-anchor", "middle")
+			.attr("font-weight", "bold")
+			.attr("transform", "translate("+ (this.WIDTH / 2) +","+(this.HEIGHT-(this.MARGINS.bottom * 0.25))+")")
+			.text(this.props.data.label.x);
+
 		// Define function that will generate the lines
 		return d3.svg.line()
 			.x((d) => xScale(this.xParser(d.x)))
@@ -75,6 +88,8 @@ class LineChart extends Component {
 					.attr('stroke', line.color)
 					.attr('stroke-width', 2)
 					.attr('fill', 'none');
+
+			if ( !this.props.showPoints ) return;
 
 			vis.selectAll(`[group=${line.id}]`)
 				.data(line.points)
@@ -131,6 +146,7 @@ LineChart.propTypes = {
 	yMin: PropTypes.number,
 	yMax: PropTypes.number,
 	isDate: PropTypes.bool,
+	showPoints: PropTypes.bool,
 	xParser: PropTypes.func,
 	xDisplay: PropTypes.func,
 	interpolate: PropTypes.string

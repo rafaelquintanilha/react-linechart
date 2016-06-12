@@ -5,11 +5,16 @@ import { yearlyData, monthlyData } from "../constants/Points";
 import update from 'react/lib/update';
 import d3 from "d3";
 
+import { dataParser } from "../businessLogic/gsmUtil";
+
 export default class App extends Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { yearlyData, monthlyData };
+		
+		const gsmData = dataParser();
+
+		this.state = { gsmData, monthlyData };
 	}
 
 	handleClick() {
@@ -18,7 +23,7 @@ export default class App extends Component {
 	}
 
 	render() {
-		const { yearlyData, monthlyData } = this.state;
+		const { gsmData, monthlyData } = this.state;
 		return (
 			<div>
 				<center>
@@ -28,19 +33,19 @@ export default class App extends Component {
 				<LineChart
 					id="numberChart"
 					width="1000"
-					height="400"
-					yMin="0"
-					yMax="350"
-					interpolate="basis"
+					height="400"					
+					interpolate="cardinal"
+					yMin={-100}
+					yMax={100}					
 					isDate={false}
-					data={yearlyData} />				
-				<LineChart
+					data={gsmData} />				
+				{/*<LineChart
 					id="dateChart"
 					width="1000"
 					height="400"										
 					xDisplay={d3.time.format("%d %b")}
 					isDate
-					data={monthlyData} />
+					data={monthlyData} />*/}
 			</div>
 		);
 	}
