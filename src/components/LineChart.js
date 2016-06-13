@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { identity, getMaxMin } from '../businessLogic/util';
+import ColorLabel from '../businessLogic/colorLabel';
 import d3 from "d3";
 
 class LineChart extends Component {
@@ -8,7 +9,7 @@ class LineChart extends Component {
 		super(props);
 		
 		// Define width, height and margin where the visualization will be displayed
-		this.MARGINS = props.margins || { top: 30, right: 20, bottom: 30, left: 50 };
+		this.MARGINS = props.margins || { top: 50, right: 20, bottom: 50, left: 55 };
 		this.WIDTH = parseFloat(props.width) || 1024;
 		this.HEIGHT = parseFloat(props.height) || 720;
 
@@ -26,7 +27,12 @@ class LineChart extends Component {
 
 	componentDidMount() {
 		this.lineGen = this.generateAxis();
-		this.generateLines(this.lineGen);
+		this.generateData();
+	}
+
+	componentDidUpdate() {
+		console.log("did update");
+		this.generateData();
 	}
 
 	generateAxis() {
@@ -49,45 +55,83 @@ class LineChart extends Component {
 
 		// Insert axis into visualization
 		vis.append("svg:g")
-			.attr("class", "axis")
-			.attr("transform", "translate(0," + (this.HEIGHT - this.MARGINS.bottom) + ")")
+			.attr("class", "axis")			
+			.attr("transform", `translate(0, ${(this.HEIGHT - this.MARGINS.bottom)})`)
 			.call(xAxis);
 
 		vis.append("svg:g")
 			.attr("class", "axis")
-			.attr("transform", "translate(" + (this.MARGINS.left) + ",0)")
+			.attr("transform", `translate(${this.MARGINS.left}, 0)`)
 			.call(yAxis);
+
+		// Insert label for each axis
+		vis.append("text")
+			.attr("class", "label-text")
+			.attr("transform", `translate(${this.WIDTH / 2}, ${this.HEIGHT - 0.25 * this.MARGINS.bottom})`)			
+			.text(this.props.data.label.x);
+
+		vis.append("text")
+			.attr("class", "label-text")
+			.attr("transform", `translate(${this.MARGINS.left * 0.35}, ${this.HEIGHT/2})rotate(-90)`)			
+			.text(this.props.data.label.y);		
 
 		// Define function that will generate the lines
 		return d3.svg.line()
 			.x((d) => xScale(this.xParser(d.x)))
 			.y((d) => yScale(d.y))
 			.interpolate(this.INTERPOLATE);
-	}
+	}	
 
-	generateLines(lineGen) {
+	generateData() {
 		const vis = d3.select(`#${this.props.id}`);
 		this.props.data.lines.map((line, i) => {
-			vis.append("svg:g")
-				.attr("class", "line")				
-				.append('path')
-					.attr('d', lineGen(line.points))
-					.attr('stroke', line.color)
-					.attr('stroke-width', 2)
-					.attr('fill', 'none');
-
-			vis.selectAll(`[group=${line.id}]`)
-				.data(line.points)
-				.enter().append("circle")
-					.attr("group", line.id)
-					.attr('stroke', line.color)
-					.attr("class", "dot")					
-					.attr("cx", lineGen.x())
-					.attr("cy", lineGen.y())
-					.attr("r", line.pointRadius || this.POINT_RADIUS)
-					.on("mouseover", ((point) => this.handleMouseOver(point)))
-					.on("mouseout", (() => this.handleMouseOut()));
+			if ( this.props.drawLines ) this.generateLine(vis, line);
+			if ( this.props.showPoints ) this.generatePoints(vis, line);
+			if ( this.props.showColorLabels ) this.generateColorLabels(vis);
 		});
+	}
+
+	generateLine(vis, line) {
+		console.log(line.points);
+		vis.append("svg:g")
+			.attr("class", "line")				
+			.append('path')
+				.attr('d', this.lineGen(line.points))
+				.attr('stroke', line.color)
+				.attr('stroke-width', 2)
+				.attr('fill', 'none');
+	}
+
+	generatePoints(vis, line) {
+		vis.selectAll(`[group=${line.id}]`)
+			.data(line.points)
+			.enter().append("circle")
+				.attr("group", line.id)
+				.attr('stroke', line.color)
+				.attr("class", "dot")					
+				.attr("cx", this.lineGen.x())
+				.attr("cy", this.lineGen.y())
+				.attr("r", line.pointRadius || this.POINT_RADIUS)
+				.on("mouseover", ((point) => this.handleMouseOver(point)))
+				.on("mouseout", (() => this.handleMouseOut()));
+	}
+
+	generateColorLabels(vis) {
+		const CL = new ColorLabel(this.WIDTH, this.HEIGHT, this.MARGINS, this.props.labelPosition);		
+
+		this.props.data.lines.map((line, i) => {
+			const { rectX, rectY, textX, textY } = CL.generateCoords(i);			
+			vis.append("rect")
+				.attr("width", CL.rectWidth)			
+				.attr("height", CL.rectHeight)
+				.attr("fill", line.color)
+				.attr("transform", `translate(${rectX}, ${rectY})`);
+
+			vis.append("text")
+				.attr("font-size", "13px")			
+				.attr("transform", `translate(${textX}, ${textY})`)
+				.text(line.name || line.id);
+		});		
 	}
 
 	handleMouseOver(point) {
@@ -131,9 +175,13 @@ LineChart.propTypes = {
 	yMin: PropTypes.number,
 	yMax: PropTypes.number,
 	isDate: PropTypes.bool,
+	showPoints: PropTypes.bool,
+	showColorLabels: PropTypes.bool,
+	drawLines: PropTypes.bool,
 	xParser: PropTypes.func,
 	xDisplay: PropTypes.func,
-	interpolate: PropTypes.string
+	interpolate: PropTypes.string,
+	labelPosition: PropTypes.string
 };
 
 export default LineChart;

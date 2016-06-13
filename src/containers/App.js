@@ -5,39 +5,48 @@ import { yearlyData, monthlyData } from "../constants/Points";
 import update from 'react/lib/update';
 import d3 from "d3";
 
+import { dataParser } from "../businessLogic/gsmUtil";
+
 export default class App extends Component {
 
 	constructor(props) {
 		super(props);
-		this.state = { yearlyData, monthlyData };
+
+		const gsmData = dataParser();
+
+		this.state = { gsmData, monthlyData };
 	}
 
 	handleClick() {
-		const newMonthly = update(monthlyData, { lines: { [0]: { points: { $push: [{ "x": "2016-01-09", "y": 237 }] } } } });
+		const newMonthly = update(monthlyData, { lines: { [0]: { points: { $push: [{ "x": "2016-01-12", "y": 177 }] } } } });
 		this.setState({ monthlyData: newMonthly });
 	}
 
 	render() {
-		const { yearlyData, monthlyData } = this.state;
+		const { gsmData, monthlyData } = this.state;		
 		return (
 			<div>
 				<center>
 					<h1>React LineChart</h1>
 					<button type="button" onClick={this.handleClick.bind(this)}>Add Value</button>
 				</center>
-				<LineChart
+				{/*<LineChart
 					id="numberChart"
 					width="1000"
-					height="400"
-					yMin="0"
-					yMax="350"
-					interpolate="basis"
+					height="400"										
+					yMin={-100}					
+					yMax={100}
+					drawLines					
+					showColorLabels
+					labelPosition="bottom-right"					
 					isDate={false}
-					data={yearlyData} />				
+					data={gsmData} />*/}
 				<LineChart
 					id="dateChart"
 					width="1000"
-					height="400"										
+					height="400"
+					drawLines
+					showPoints
 					xDisplay={d3.time.format("%d %b")}
 					isDate
 					data={monthlyData} />
