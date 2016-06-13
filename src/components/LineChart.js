@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { identity, getMaxMin } from '../businessLogic/util';
+import ColorLabel from '../businessLogic/colorLabel';
 import d3 from "d3";
 
 class LineChart extends Component {
@@ -18,9 +19,6 @@ class LineChart extends Component {
 		// Interpolation function
 		this.INTERPOLATE = this.props.interpolate || "cardinal";
 
-		// Define if we should draw lines connecting dots		
-		this.DRAW_LINES = this.props.drawLines || this.props.drawLines === undefined;		
-
 		// D3 functions for parsing and displaying
 		// Refer to: https://github.com/d3/d3/wiki/Time-Formatting
 		this.xParser = this.props.xParser || (this.props.isDate ? d3.time.format("%Y-%M-%d").parse : identity);
@@ -29,7 +27,12 @@ class LineChart extends Component {
 
 	componentDidMount() {
 		this.lineGen = this.generateAxis();
-		this.generateLines(this.lineGen);
+		this.generateData();
+	}
+
+	componentDidUpdate() {
+		console.log("did update");
+		this.generateData();
 	}
 
 	generateAxis() {
@@ -52,13 +55,13 @@ class LineChart extends Component {
 
 		// Insert axis into visualization
 		vis.append("svg:g")
-			.attr("class", "axis")
-			.attr("transform", "translate(0," + (this.HEIGHT - this.MARGINS.bottom) + ")")
+			.attr("class", "axis")			
+			.attr("transform", `translate(0, ${(this.HEIGHT - this.MARGINS.bottom)})`)
 			.call(xAxis);
 
 		vis.append("svg:g")
 			.attr("class", "axis")
-			.attr("transform", "translate(" + (this.MARGINS.left) + ",0)")
+			.attr("transform", `translate(${this.MARGINS.left}, 0)`)
 			.call(yAxis);
 
 		// Insert label for each axis
@@ -70,76 +73,65 @@ class LineChart extends Component {
 		vis.append("text")
 			.attr("class", "label-text")
 			.attr("transform", `translate(${this.MARGINS.left * 0.35}, ${this.HEIGHT/2})rotate(-90)`)			
-			.text(this.props.data.label.y);
-
-		vis.append("text")
-			.attr("font-size", "13px")			
-			.attr("transform", `translate(${this.MARGINS.left + 20 + 25}, ${this.MARGINS.top})`)			
-			.text("Global");
-
-		vis.append("rect")
-			.attr("width", "20")			
-			.attr("height", "8")
-			.attr("fill", "blue")
-			.attr("transform", `translate(${this.MARGINS.left + 20}, ${this.MARGINS.top - 8})`)
-
-		vis.append("text")
-			.attr("font-size", "13px")			
-			.attr("transform", `translate(${this.MARGINS.left + 20 + 25}, ${this.MARGINS.top + 15})`)			
-			.text("North Hem.");
-
-		vis.append("rect")
-			.attr("width", "20")			
-			.attr("height", "8")
-			.attr("fill", "red")
-			.attr("transform", `translate(${this.MARGINS.left + 20}, ${this.MARGINS.top - 8 + 15})`)
-
-		vis.append("text")
-			.attr("font-size", "13px")			
-			.attr("transform", `translate(${this.MARGINS.left + 20 + 25}, ${this.MARGINS.top + 15 + 15})`)			
-			.text("South Hem.");
-
-		vis.append("rect")
-			.attr("width", "20")			
-			.attr("height", "8")
-			.attr("fill", "green")
-			.attr("transform", `translate(${this.MARGINS.left + 20}, ${this.MARGINS.top - 8 + 15 + 15})`)		
+			.text(this.props.data.label.y);		
 
 		// Define function that will generate the lines
 		return d3.svg.line()
 			.x((d) => xScale(this.xParser(d.x)))
 			.y((d) => yScale(d.y))
 			.interpolate(this.INTERPOLATE);
-	}
+	}	
 
-	generateLines(lineGen) {
+	generateData() {
 		const vis = d3.select(`#${this.props.id}`);
 		this.props.data.lines.map((line, i) => {
-
-			if ( this.DRAW_LINES ) {
-				vis.append("svg:g")
-					.attr("class", "line")				
-					.append('path')
-						.attr('d', lineGen(line.points))
-						.attr('stroke', line.color)
-						.attr('stroke-width', 2)
-						.attr('fill', 'none');
-			}
-
-			if ( !this.props.showPoints ) return;
-
-			vis.selectAll(`[group=${line.id}]`)
-				.data(line.points)
-				.enter().append("circle")
-					.attr("group", line.id)
-					.attr('stroke', line.color)
-					.attr("class", "dot")					
-					.attr("cx", lineGen.x())
-					.attr("cy", lineGen.y())
-					.attr("r", line.pointRadius || this.POINT_RADIUS)
-					.on("mouseover", ((point) => this.handleMouseOver(point)))
-					.on("mouseout", (() => this.handleMouseOut()));
+			if ( this.props.drawLines ) this.generateLine(vis, line);
+			if ( this.props.showPoints ) this.generatePoints(vis, line);
+			if ( this.props.showColorLabels ) this.generateColorLabels(vis);
 		});
+	}
+
+	generateLine(vis, line) {
+		console.log(line.points);
+		vis.append("svg:g")
+			.attr("class", "line")				
+			.append('path')
+				.attr('d', this.lineGen(line.points))
+				.attr('stroke', line.color)
+				.attr('stroke-width', 2)
+				.attr('fill', 'none');
+	}
+
+	generatePoints(vis, line) {
+		vis.selectAll(`[group=${line.id}]`)
+			.data(line.points)
+			.enter().append("circle")
+				.attr("group", line.id)
+				.attr('stroke', line.color)
+				.attr("class", "dot")					
+				.attr("cx", this.lineGen.x())
+				.attr("cy", this.lineGen.y())
+				.attr("r", line.pointRadius || this.POINT_RADIUS)
+				.on("mouseover", ((point) => this.handleMouseOver(point)))
+				.on("mouseout", (() => this.handleMouseOut()));
+	}
+
+	generateColorLabels(vis) {
+		const CL = new ColorLabel(this.WIDTH, this.HEIGHT, this.MARGINS, this.props.labelPosition);		
+
+		this.props.data.lines.map((line, i) => {
+			const { rectX, rectY, textX, textY } = CL.generateCoords(i);			
+			vis.append("rect")
+				.attr("width", CL.rectWidth)			
+				.attr("height", CL.rectHeight)
+				.attr("fill", line.color)
+				.attr("transform", `translate(${rectX}, ${rectY})`);
+
+			vis.append("text")
+				.attr("font-size", "13px")			
+				.attr("transform", `translate(${textX}, ${textY})`)
+				.text(line.name || line.id);
+		});		
 	}
 
 	handleMouseOver(point) {
@@ -184,10 +176,12 @@ LineChart.propTypes = {
 	yMax: PropTypes.number,
 	isDate: PropTypes.bool,
 	showPoints: PropTypes.bool,
+	showColorLabels: PropTypes.bool,
 	drawLines: PropTypes.bool,
 	xParser: PropTypes.func,
 	xDisplay: PropTypes.func,
-	interpolate: PropTypes.string
+	interpolate: PropTypes.string,
+	labelPosition: PropTypes.string
 };
 
 export default LineChart;

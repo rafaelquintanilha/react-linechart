@@ -4,18 +4,21 @@ export function dataParser() {
 	const lines = [
 		{ 
 			id: "glob",
+			name: "Global",
 			color: "blue",
 			pointRadius: 2,
 			points: []
 		},
 		{ 
 			id: "nhem",
+			name: "North Hem.",
 			color: "red",
 			pointRadius: 2,
 			points: []
 		},
 		{ 
 			id: "shem",
+			name: "South Hem.",
 			color: "green",
 			pointRadius: 2,	
 			points: []
