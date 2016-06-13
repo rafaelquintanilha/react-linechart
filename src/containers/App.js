@@ -18,7 +18,7 @@ export default class App extends Component {
 	}
 
 	handleClick() {
-		const newMonthly = update(monthlyData, { lines: { [0]: { points: { $push: [{ "x": "2016-01-12", "y": 177 }] } } } });
+		const newMonthly = update(monthlyData, { lines: { [0]: { points: { $push: [{ "x": "2016-01-31", "y": 277 }] } } } });
 		this.setState({ monthlyData: newMonthly });
 	}
 
@@ -44,9 +44,10 @@ export default class App extends Component {
 				<LineChart
 					id="dateChart"
 					width="1000"
-					height="400"
+					height="500px"
 					drawLines
-					showPoints
+					showPoints					
+					showColorLabels					
 					xDisplay={d3.time.format("%d %b")}
 					isDate
 					data={monthlyData} />

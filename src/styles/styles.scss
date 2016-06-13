@@ -19,7 +19,7 @@ body {
   cursor: pointer;
 }
 
-div.lineChartTooltip { 
+div.svg-line-chart-tooltip { 
   position: absolute;     
   text-align: center;     
   width: 100px;
@@ -27,8 +27,7 @@ div.lineChartTooltip {
   padding-bottom: 5px;
   font: 12px sans-serif;    
   background: whitesmoke; 
-  border: 0px;    
-  border-radius: 8px;     
+  border: 0px;
   pointer-events: none;
   opacity: 0;     
 }

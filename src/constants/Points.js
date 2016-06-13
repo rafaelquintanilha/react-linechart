@@ -45,8 +45,7 @@ export const monthlyData = {
 	lines: [
 		{
 			id: "blue-line",
-			color: "steelblue",
-			pointRadius: 7.5,					
+			color: "steelblue",		
 			points: [
 				{ "x": "2016-01-02", "y": 202 }, 
 				{ "x": "2016-01-12", "y": 215 }, 
