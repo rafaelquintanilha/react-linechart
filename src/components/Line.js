@@ -9,7 +9,7 @@ export default class Line extends React.Component {
 					stroke={this.props.stroke}
 					d={this.props.d}
 					strokeWidth={2}
-					fill="none"
+					fill="none"					
 				/>
 			</g>
 		);

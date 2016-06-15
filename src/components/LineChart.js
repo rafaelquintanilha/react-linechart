@@ -47,10 +47,10 @@ class LineChart extends Component {
 	}
 
 	setGenerators(props = this.props) {
-		const { width, height, margins, data, isDate, yMin, yMax, interpolate } = props;
+		const { width, height, margins, lines, isDate, yMin, yMax, interpolate } = props;
 		/* ToDo: add logic to avoid re-evaluate axis if domains don't chante */
 		const { xDomain, xScale, xAxisGen, yDomain, yScale, yAxisGen } = 
-			this.axisGenerator(width, height, margins, data.lines, isDate, yMin, yMax);		
+			this.axisGenerator(width, height, margins, lines, isDate, yMin, yMax);		
 		const lineGen = this.lineGenerator(xScale, yScale, getInterpolate(interpolate));
 		this.setState({ xAxisGen, yAxisGen, xScale, yScale, lineGen });
 	}
@@ -84,7 +84,7 @@ class LineChart extends Component {
 
 	renderLines() {
 		if ( !this.props.drawLines ) return;
-		return this.props.data.lines.map((line, i) => 
+		return this.props.lines.map((line, i) => 
 			<Line
 				key={i}
 				id={line.id}
@@ -96,11 +96,11 @@ class LineChart extends Component {
 	renderPoints() {
 		if ( !this.props.showPoints ) return;
 
-		const { width, height, margins, data, isDate, yMin, yMax } = this.props;
+		const { width, height, margins, lines, isDate, yMin, yMax } = this.props;
 		const { xScale, yScale } = this.state;
 		const pointRadius = parseDimension(this.props.pointRadius) || DEFAULT_CHART_PROPS.pointRadius;
 
-		return this.props.data.lines.map((line, i) => {						
+		return this.props.lines.map((line, i) => {						
 			return line.points.map((p, i) => 
 				<Point 
 					key={i} 
@@ -123,7 +123,7 @@ class LineChart extends Component {
 		const { width, height, margins } = parseAllDimensions(this.props.width, this.props.height, this.props.margins);
 		const util = new ColorLegendUtil(width, height, margins, this.props.legendPosition);
 
-		return this.props.data.lines.map((line, i) => {
+		return this.props.lines.map((line, i) => {
 			const { rectX, rectY, textX, textY } = util.generateCoords(i);
 			return (
 				<Legend 
@@ -169,7 +169,7 @@ LineChart.propTypes = {
 	yLabel: PropTypes.string,
 
 	// Data for rendering the chart
-	data: PropTypes.object.isRequired,
+	lines: PropTypes.array.isRequired,
 
 	// Boundaries for the Y coordinate
 	yMin: PropTypes.number,

@@ -20,7 +20,7 @@ export function parseMargins(margins) {
 	return {
 		top: 	parseDimension(margins.top) 	|| DEFAULT_CHART_PROPS.margins.top,
 		right: 	parseDimension(margins.right) 	|| DEFAULT_CHART_PROPS.margins.right,
-		bottom: parseDimension(margins.bottom) || DEFAULT_CHART_PROPS.margins.bottom,
+		bottom: parseDimension(margins.bottom) 	|| DEFAULT_CHART_PROPS.margins.bottom,
 		left: 	parseDimension(margins.left) 	|| DEFAULT_CHART_PROPS.margins.left
 	};
 }
@@ -45,42 +45,28 @@ export function getInterpolate(interpolate) {
 	return interpolate || DEFAULT_CHART_PROPS.interpolate;
 }
 
-/*export function parseFlatArray(data, xDimension, yDimensionArray, idArray, colorArray, nameArray ) {
-	const lines = [
-		{ 
-			id: "glob",
-			name: "Global",
-			color: "blue",
-			pointRadius: 2,
-			points: []
-		},
-		{ 
-			id: "nhem",
-			name: "North Hem.",
-			color: "red",
-			pointRadius: 2,
-			points: []
-		},
-		{ 
-			id: "shem",
-			name: "South Hem.",
-			color: "green",
-			pointRadius: 2,	
-			points: []
-		}
-	];
+export function parseFlatArray(data, xDimension, yDimensionArray, colorArray = [], idArray = [], nameArray = [] ) {
 
-	gsmData.map((d, i) => {
-		let glob = { x: d["Year"], y: d["Glob"] };
-		let nhem = { x: d["Year"], y: d["NHem"] };
-		let shem = { x: d["Year"], y: d["SHem"] };
-		lines[0].points.push(glob);
-		lines[1].points.push(nhem);
-		lines[2].points.push(shem);
+	const { googleColors } = DEFAULT_CHART_PROPS;
+	
+	const lines = [];
+	yDimensionArray.map((yDimension, i) => {
+		lines.push({
+			id: idArray[i] || `${xDimension}-${yDimensionArray[i]}`,
+			name: nameArray[i],
+			color: colorArray[i] || googleColors[i % googleColors.length],
+			points: []
+		});
+	});
+	
+	data.map((d, i) => {
+		lines.map((line, j) => {
+			line.points.push({
+				x: d[xDimension],
+				y: d[yDimensionArray[j]]
+			});
+		});		
 	});
 
-	return {
-		label: { x: "Year", y: "Deviation" },		
-		lines
-	};
-}*/
+	return lines;
+}
