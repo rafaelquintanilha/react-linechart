@@ -1,14 +1,14 @@
 import d3 from "d3";
 
-export function handleMouseOver(point, label, xDisplay, xParser) {
+export function handleMouseOver(event, point, id, xLabel, yLabel, xDisplay, xParser ) {
 	// Creates the HTML to be displayed
 	const html = `
-		<b>${label.x}: </b>${(xDisplay)(xParser(point.x))}
+		<b>${xLabel}: </b>${(xDisplay)(xParser(point.x))}
 		<br />
-		<b>${label.y}: </b>${point.y}`;
+		<b>${yLabel}: </b>${point.y}`;
 
 	// First creates tooltip div
-	const tooltip = d3.select("#svg-line-chart")
+	const tooltip = d3.select(`#${id}`)
 		.append("div")
 		.attr("class", "svg-line-chart-tooltip");
 
@@ -16,8 +16,8 @@ export function handleMouseOver(point, label, xDisplay, xParser) {
 		.duration(200)
 		.style("opacity", .9);		
 	tooltip.html(html)
-		.style("left", (d3.event.pageX) + "px")
-		.style("top", (d3.event.pageY - 28) + "px");
+		.style("left", (event.pageX) + "px")
+		.style("top", (event.pageY - 28) + "px");
 }
 
 export function handleMouseOut() {
@@ -28,6 +28,6 @@ export function handleMouseOut() {
 			.remove();
 }
 
-export function handleClick(point) {
+export function handleClick(event, point) {
 	console.log(point);
 }

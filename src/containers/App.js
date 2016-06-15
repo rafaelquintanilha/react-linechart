@@ -30,24 +30,30 @@ export default class App extends Component {
 					<h1>React LineChart</h1>
 					<button type="button" onClick={this.handleClick.bind(this)}>Add Value</button>
 				</center>
-				{/*<LineChart
+				<LineChart
 					id="numberChart"
 					width="1000"
 					height="400"										
 					yMin={-100}					
 					yMax={100}
-					drawLines					
-					showColorLabels
-					labelPosition="bottom-right"					
+					drawLines
+					showPoints
+					pointRadius="2"
+					showLegends
+					legendPosition="bottom-right"					
 					isDate={false}
-					data={gsmData} />*/}
+					data={gsmData} />
 				<LineChart
 					id="dateChart"
 					width="1000"
-					height="500px"
+					height="400px"
+					xLabel="Time"
+					yLabel="Value"
+					interpolate="linear"
 					drawLines
-					showPoints					
-					showColorLabels					
+					showPoints
+					showLegends
+					legendPosition="top-left"
 					xDisplay={d3.time.format("%d %b")}
 					isDate
 					data={monthlyData} />

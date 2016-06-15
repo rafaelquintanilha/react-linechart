@@ -1,4 +1,4 @@
-export default class ColorLabel {
+export default class ColorLegendUtil {
 
 	constructor(
 		width, height, margins, // Values from the chart we are inserting into

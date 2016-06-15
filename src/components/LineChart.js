@@ -3,214 +3,154 @@ import React, { Component, PropTypes } from 'react';
 
 // External libs
 import d3 from "d3";
+import _ from "lodash";
 
 // Util
-import { identity, getMaxMin, parseDimensions, setMargins } from '../businessLogic/util';
+import { identity, getMaxMin, parseDimension, parseAllDimensions, getXLabel, getYLabel, getInterpolate } from '../businessLogic/util';
 import { handleMouseOver, handleMouseOut, handleClick } from '../businessLogic/events';
-import ColorLabel from '../businessLogic/colorLabel';
+import ColorLegendUtil from '../businessLogic/colorLegendUtil';
 
 import { DEFAULT_CHART_PROPS } from '../constants/DefaultChartProps';
+
+// Components
+import XAxis from './XAxis';
+import YAxis from './YAxis';
+import Line from './Line';
+import Point from './Point';
+import Legend from './Legend';
 
 class LineChart extends Component {
 
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			width: 			parseDimensions(props.width) || DEFAULT_CHART_PROPS.width,
-			height: 		parseDimensions(props.height) || DEFAULT_CHART_PROPS.height,
-			margins: 		setMargins(props.margins)
-		};
+		const { xParser, xDisplay, isDate, onClick, onMouseOver, onMouseOut, xLabel, yLabel, id } = this.props;
 
 		// D3 functions for parsing and displaying
 		// Refer to: https://github.com/d3/d3/wiki/Time-Formatting
-		this.xParser = this.props.xParser || (this.props.isDate ? d3.time.format("%Y-%M-%d").parse : identity);
-		this.xDisplay = this.props.xDisplay || (this.props.isDate ? d3.time.format("%b %d") : d3.format("d"));
+		this.xParser = xParser || (isDate ? d3.time.format("%Y-%M-%d").parse : identity);
+		this.xDisplay = xDisplay || (isDate ? d3.time.format("%b %d") : d3.format("d"));
 
-		// Events
-		this.handleClick = this.props.onClick || handleClick;
-		this.handleMouseOver = this.props.onMouseOver || handleMouseOver;
-		this.handleMouseOut = this.props.onMouseOut || handleMouseOut;
+		// Events		
+		this.handleMouseOver = onMouseOver 
+			|| _.partial(handleMouseOver, _, _, id, getXLabel(xLabel), getYLabel(yLabel), this.xDisplay, this.xParser);
+		this.handleMouseOut = onMouseOut || handleMouseOut;
+		this.handleClick = onClick || handleClick;
 	}
 
-	componentDidMount() {
-		// Store the SVG node into component
-		this.vis = d3.select(`#${this.props.id}`);
-		this.renderChart();
+	componentWillMount() {
+		this.setGenerators();
 	}
 
-	componentDidUpdate() {
-		this.renderChart(true);
-
-		if ( !this.props.showPoints ) this.removePoints();
+	componentWillReceiveProps(nextProps) {
+		this.setGenerators(nextProps);
 	}
 
-	renderChart(isUpdating = false) {
-		const { xDomain, xScale, xAxisGen, yDomain, yScale, yAxisGen } = this.defineAxis();
-		this.generateAxis(xAxisGen, yAxisGen);
-		if ( !isUpdating ) this.generateAxisLabel();
-		this.lineGen = this.lineGenerator(xScale, yScale);
-		console.log(xScale(this.xParser("2016-01-02")));
-		this.generateData();
+	setGenerators(props = this.props) {
+		const { width, height, margins, data, isDate, yMin, yMax, interpolate } = props;
+		/* ToDo: add logic to avoid re-evaluate axis if domains don't chante */
+		const { xDomain, xScale, xAxisGen, yDomain, yScale, yAxisGen } = 
+			this.axisGenerator(width, height, margins, data.lines, isDate, yMin, yMax);		
+		const lineGen = this.lineGenerator(xScale, yScale, getInterpolate(interpolate));
+		this.setState({ xAxisGen, yAxisGen, xScale, yScale, lineGen });
 	}
 
-	defineAxis() {
-		const { lines } = this.props.data;
-		const { width, height, margins } = this.state;
+	axisGenerator(_width, _height, _margins, lines, isDate, yMin, yMax) {
+		const { width, height, margins } = parseAllDimensions(_width, _height, _margins);
 
 		// Determine domain, scale and axis for x
 		const xDomain = getMaxMin(lines, "x", this.xParser);
-		const xScale = this.props.isDate
+		const xScale = isDate
 			? d3.time.scale().range([margins.left, width - margins.right]).domain(xDomain)
 			: d3.scale.linear().range([margins.left, width - margins.right]).domain(xDomain);
 		const xAxisGen = d3.svg.axis().scale(xScale).ticks(10).tickFormat(this.xDisplay);			
 
 		// Determine domain, scale and axis for y
 		const yMaxMin = getMaxMin(lines, "y");
-		const yDomain = [this.props.yMin || yMaxMin[0], this.props.yMax || yMaxMin[1]]; 
+		const yDomain = [yMin || yMaxMin[0], yMax || yMaxMin[1]]; 
 		const yScale = d3.scale.linear().range([height - margins.top, margins.bottom]).domain(yDomain);
 		const yAxisGen = d3.svg.axis().scale(yScale).orient("left");
 
 		return { xDomain, xScale, xAxisGen, yDomain, yScale, yAxisGen };		
 	}
 
-	generateAxis(xAxisGen, yAxisGen) {
-		const { height, margins } = this.state;
-
-		// Insert axis into visualization
-		let xAxis = d3.select("g#x-axis");
-		if ( xAxis.empty() ) {
-			this.vis.append("svg:g")
-				.attr("id", "x-axis")
-				.attr("class", "axis")			
-				.attr("transform", `translate(0, ${(height - margins.bottom)})`);
-			xAxis = d3.select("g#x-axis");
-		} 
-		xAxis.call(xAxisGen);
-
-		let yAxis = d3.select("g#y-axis");
-		if ( yAxis.empty() ) {
-			this.vis.append("svg:g")
-				.attr("id", "y-axis")
-				.attr("class", "axis")
-				.attr("transform", `translate(${margins.left}, 0)`);
-			yAxis = d3.select("g#y-axis");		
-		}
-		yAxis.call(yAxisGen);	
-	}
-
-	generateAxisLabel() {
-		if ( !d3.selectAll("text.label-text").empty() ) return;
-
-		const { width, height, margins } = this.state;
-
-		// Insert label for each axis
-		this.vis.append("text")
-			.attr("class", "label-text")
-			.attr("transform", `translate(${width / 2}, ${height - 0.20 * margins.bottom})`)			
-			.text(this.props.data.label.x);
-
-		this.vis.append("text")
-			.attr("class", "label-text")
-			.attr("transform", `translate(${margins.left * 0.35}, ${height / 2})rotate(-90)`)			
-			.text(this.props.data.label.y);
-	}
-
 	// Define function that will generate the lines
-	lineGenerator(xScale, yScale) {		
+	lineGenerator(xScale, yScale, interpolate) {		
 		return d3.svg.line()
 			.x((d) => xScale(this.xParser(d.x)))
 			.y((d) => yScale(d.y))
-			.interpolate(this.props.interpolate || DEFAULT_CHART_PROPS.interpolate);
-	}	
+			.interpolate(interpolate);
+	}
 
-	generateData() {
-		this.props.data.lines.map((line, i) => {
-			if ( this.props.drawLines ) this.generateLine(line);
-			if ( this.props.showPoints ) this.generatePoints(line);
-			if ( this.props.showColorLabels ) this.generateColorLabels();
+	renderLines() {
+		if ( !this.props.drawLines ) return;
+		return this.props.data.lines.map((line, i) => 
+			<Line
+				key={i}
+				id={line.id}
+				d={this.state.lineGen(line.points)}
+				stroke={line.color} />
+		);
+	}
+
+	renderPoints() {
+		if ( !this.props.showPoints ) return;
+
+		const { width, height, margins, data, isDate, yMin, yMax } = this.props;
+		const { xScale, yScale } = this.state;
+		const pointRadius = parseDimension(this.props.pointRadius) || DEFAULT_CHART_PROPS.pointRadius;
+
+		return this.props.data.lines.map((line, i) => {						
+			return line.points.map((p, i) => 
+				<Point 
+					key={i} 
+					r={pointRadius} 
+					cx={xScale(this.xParser(p.x))} 
+					cy={yScale(p.y)}								
+					group={line.id}
+					stroke={line.color}
+					point={p}
+					onClick={this.handleClick}
+					onMouseOver={this.handleMouseOver}
+					onMouseOut={this.handleMouseOut} />
+			);
 		});
 	}
 
-	generateLine(line) {
-		let path = d3.select(`g#${line.id} > path`);
+	renderLegends() {
+		if ( !this.props.showLegends ) return;
 
-		// If there's no path yet, create it first
-		if ( path.empty() ) {
-			this.vis.append("svg:g")
-				.attr("id", line.id)
-				.attr("class", "line")				
-				.append('path');
+		const { width, height, margins } = parseAllDimensions(this.props.width, this.props.height, this.props.margins);
+		const util = new ColorLegendUtil(width, height, margins, this.props.legendPosition);
 
-			path = d3.select(`g#${line.id} > path`); // Selects the brand new path
-		}
-
-		// Populates path with data  
-		path
-			.attr('d', this.lineGen(line.points))
-			.attr('stroke', line.color)
-			.attr('stroke-width', 2)
-			.attr('fill', 'none');
-	}
-
-	generatePoints(line) {
-		const points = this.vis.selectAll(`[group=${line.id}]`).data(line.points);
-		const pointRadius = parseDimensions(this.props.pointRadius) || DEFAULT_CHART_PROPS.pointRadius;
-
-		// Update
-		points
-			.attr("cx", this.lineGen.x())
-			.attr("cy", this.lineGen.y())
-			.attr("r", pointRadius);
-		
-		// Enter
-		points.enter().append("circle")
-				.attr("group", line.id)
-				.attr('stroke', line.color)
-				.attr("class", "dot")					
-				.attr("cx", this.lineGen.x())
-				.attr("cy", this.lineGen.y())
-				.attr("r", pointRadius)
-				.on("click", ((point) => this.handleClick(point)))
-				.on("mouseover", ((point) => this.handleMouseOver(point, this.props.data.label, this.xDisplay, this.xParser)))
-				.on("mouseout", this.handleMouseOut);
-
-		// Exit
-		points.exit().remove();
-	}
-
-	removePoints() {
-		this.vis.selectAll('circle').remove();
-	}
-
-	generateColorLabels() {
-		// First remove all labels, we will re-generate them as they are computationally inexpensive
-		d3.selectAll("g.color-label").remove();
-
-		const { width, height, margins } = this.state;
-		const CL = new ColorLabel(width, height, margins, this.props.labelPosition);
-
-		this.props.data.lines.map((line, i) => {
-			const { rectX, rectY, textX, textY } = CL.generateCoords(i);
-
-			const label = this.vis.append("g").attr("class", "color-label");			
-			label.append("rect")
-				.attr("width", CL.rectWidth)			
-				.attr("height", CL.rectHeight)
-				.attr("fill", line.color)
-				.attr("transform", `translate(${rectX}, ${rectY})`);
-
-			label.append("text")
-				.attr("font-size", "13px")			
-				.attr("transform", `translate(${textX}, ${textY})`)
-				.text(line.name || line.id);
-		});		
+		return this.props.data.lines.map((line, i) => {
+			const { rectX, rectY, textX, textY } = util.generateCoords(i);
+			return (
+				<Legend 
+					key={i}
+					name={line.name || line.id}
+					color={line.color}
+					rectWidth={util.rectWidth}
+					rectHeight={util.rectHeight}
+					rectX={rectX} rectY={rectY} textX={textX} textY={textY} />
+			);
+		});
 	}
 	
-	render() {		
+	render() {
+		const { width, height, margins } = parseAllDimensions(this.props.width, this.props.height, this.props.margins);
+		const { id, xLabel, yLabel } = this.props;
+		const xId = `${id}-x-axis`;
+		const yId = `${id}-y-axis`;
 		return (
-			<div id="svg-line-chart">				
-				<svg id={this.props.id} width={this.state.width} height={this.state.height} />
+			<div id={id}>				
+				<svg width={width} height={height}>
+					<XAxis id={xId} width={width} height={height} margins={margins} xAxisGen={this.state.xAxisGen} label={getXLabel(xLabel)} />
+					<YAxis id={yId} height={height} margins={margins} yAxisGen={this.state.yAxisGen} label={getYLabel(yLabel)} />
+					{this.renderLines()}
+					{this.renderPoints()}
+					{this.renderLegends()}
+				</svg>
 			</div>
 		);
 	}
@@ -223,6 +163,10 @@ LineChart.propTypes = {
 	width: PropTypes.number,
 	height: PropTypes.number,
 	margins: PropTypes.object,
+
+	// Define chart x and y labels
+	xLabel: PropTypes.string,
+	yLabel: PropTypes.string,
 
 	// Data for rendering the chart
 	data: PropTypes.object.isRequired,
@@ -242,8 +186,8 @@ LineChart.propTypes = {
 	onMouseOut: PropTypes.func,
 
 	// Should show color labels and where
-	showColorLabels: PropTypes.bool,
-	labelPosition: PropTypes.string,	
+	showLegends: PropTypes.bool,
+	legendPosition: PropTypes.string,	
 
 	// Should draw line and which function to use
 	drawLines: PropTypes.bool,

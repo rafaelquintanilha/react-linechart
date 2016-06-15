@@ -8,9 +8,9 @@ body {
 	shape-rendering: crispEdges;
 }
 
-.axis text {
-    font-family: Lato;
-    font-size: 13px;
+.tick text {
+  font-family: Lato;
+  font-size: 13px;
 }
 
 .dot {
@@ -35,4 +35,6 @@ div.svg-line-chart-tooltip {
 .label-text {
   text-anchor: middle;
   font-weight: bold;
+  font-size: 18px;
+  font-family: "Ubuntu", sans-serif;
 }
