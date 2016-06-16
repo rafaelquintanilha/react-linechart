@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 export default class Line extends React.Component {
 
-	render() {		
+	render() {			
 		return (
 			<g id={this.props.id} className="line">
 				<path 
@@ -19,5 +19,5 @@ export default class Line extends React.Component {
 Line.propTypes = {	
 	id: PropTypes.string,
 	stroke: PropTypes.string,
-	d: PropTypes.object
+	d: PropTypes.string
 };
