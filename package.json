@@ -1,6 +1,6 @@
 {
   "name": "react-linechart",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Highly customizable line chart with React",
   "main": "dist/bundle.js",
   "scripts": {
