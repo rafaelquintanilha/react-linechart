@@ -6,7 +6,7 @@ import update from 'react/lib/update';
 import d3 from "d3";
 
 import { gsmData } from "../constants/GSM";
-import { parseFlatArray } from "../businessLogic/util";
+import { parseFlatArray } from "../businessLogic/parsers";
 
 export default class App extends Component {
 
@@ -38,24 +38,24 @@ export default class App extends Component {
 					yMax={100}
 					drawLines
 					//showPoints
-					pointRadius="2"
+					//pointRadius="2"
 					showLegends
 					legendPosition="top-left"					
 					isDate={false}
 					lines={gsmFlat} />
 				<LineChart
-					id="dateChart"
+					//id="dateChart"
 					width="1000"
 					height="400px"
-					xLabel="Time"
+					xLabel="Date"
 					yLabel="Value"
 					interpolate="linear"					
 					drawLines
-					showPoints
+					//showPoints					
 					showLegends
 					legendPosition="top-left"
 					xDisplay={d3.time.format("%d %b")}
-					isDate
+					isDate					
 					lines={monthlyData} />
 			</div>
 		);

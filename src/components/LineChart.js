@@ -5,8 +5,9 @@ import React, { Component, PropTypes } from 'react';
 import d3 from "d3";
 import _ from "lodash";
 
-// Util
-import { identity, getMaxMin, parseDimension, parseAllDimensions, getXLabel, getYLabel, getInterpolate } from '../businessLogic/util';
+// Internal libs
+import { identity, getMaxMin } from '../businessLogic/util';
+import { parseAllDimensions } from '../businessLogic/parsers';
 import { handleMouseOver, handleMouseOut, handleClick } from '../businessLogic/events';
 import ColorLegendUtil from '../businessLogic/colorLegendUtil';
 
@@ -25,17 +26,15 @@ class LineChart extends Component {
 		super(props);
 
 		const { xParser, xDisplay, isDate, onClick, onMouseOver, onMouseOut, xLabel, yLabel, id } = this.props;
+		const { xDateParser, xNumericParser, xDateDisplay, xNumericDisplay } = DEFAULT_CHART_PROPS;
 
-		// D3 functions for parsing and displaying
-		// Refer to: https://github.com/d3/d3/wiki/Time-Formatting
-		this.xParser = xParser || (isDate ? d3.time.format("%Y-%M-%d").parse : identity);
-		this.xDisplay = xDisplay || (isDate ? d3.time.format("%b %d") : d3.format("d"));
+		/* ToDo: figure out how to take this chunk away from constructor, maybe using default props */		
+		this.xParser = xParser || (isDate ? xDateParser : xNumericParser);
+		this.xDisplay = xDisplay || (isDate ? xDateDisplay : xNumericDisplay);
 
 		// Events		
 		this.handleMouseOver = onMouseOver 
-			|| _.partial(handleMouseOver, _, _, id, getXLabel(xLabel), getYLabel(yLabel), this.xDisplay, this.xParser);
-		this.handleMouseOut = onMouseOut || handleMouseOut;
-		this.handleClick = onClick || handleClick;
+			|| _.partial(handleMouseOver, _, _, id, xLabel, yLabel, this.xDisplay, this.xParser);
 	}
 
 	componentWillMount() {
@@ -51,8 +50,8 @@ class LineChart extends Component {
 		/* ToDo: add logic to avoid re-evaluate axis if domains don't chante */
 		const { xDomain, xScale, xAxisGen, yDomain, yScale, yAxisGen } = 
 			this.axisGenerator(width, height, margins, lines, isDate, yMin, yMax);		
-		const lineGen = this.lineGenerator(xScale, yScale, getInterpolate(interpolate));
-		this.setState({ xAxisGen, yAxisGen, xScale, yScale, lineGen });
+		const lineGen = this.lineGenerator(xScale, yScale, interpolate);
+		this.setState({ lineGen, xAxisGen, yAxisGen, xScale, yScale });
 	}
 
 	axisGenerator(_width, _height, _margins, lines, isDate, yMin, yMax) {
@@ -96,9 +95,8 @@ class LineChart extends Component {
 	renderPoints() {
 		if ( !this.props.showPoints ) return;
 
-		const { width, height, margins, lines, isDate, yMin, yMax } = this.props;
+		const { width, height, margins, lines, isDate, yMin, yMax, onClick, onMouseOut, pointRadius } = this.props;
 		const { xScale, yScale } = this.state;
-		const pointRadius = parseDimension(this.props.pointRadius) || DEFAULT_CHART_PROPS.pointRadius;
 
 		return this.props.lines.map((line, i) => {						
 			return line.points.map((p, i) => 
@@ -110,9 +108,9 @@ class LineChart extends Component {
 					group={line.id}
 					stroke={line.color}
 					point={p}
-					onClick={this.handleClick}
+					onClick={onClick}
 					onMouseOver={this.handleMouseOver}
-					onMouseOut={this.handleMouseOut} />
+					onMouseOut={handleMouseOut} />
 			);
 		});
 	}
@@ -145,8 +143,8 @@ class LineChart extends Component {
 		return (
 			<div id={id}>				
 				<svg width={width} height={height}>
-					<XAxis id={xId} width={width} height={height} margins={margins} xAxisGen={this.state.xAxisGen} label={getXLabel(xLabel)} />
-					<YAxis id={yId} height={height} margins={margins} yAxisGen={this.state.yAxisGen} label={getYLabel(yLabel)} />
+					<XAxis id={xId} width={width} height={height} margins={margins} xAxisGen={this.state.xAxisGen} label={xLabel} />
+					<YAxis id={yId} height={height} margins={margins} yAxisGen={this.state.yAxisGen} label={yLabel} />
 					{this.renderLines()}
 					{this.renderPoints()}
 					{this.renderLegends()}
@@ -157,7 +155,7 @@ class LineChart extends Component {
 }
 
 LineChart.propTypes = {	
-	id: PropTypes.string.isRequired,
+	id: PropTypes.string,
 
 	// Width, height and margins for rendering the chart
 	width: PropTypes.number,
@@ -196,6 +194,22 @@ LineChart.propTypes = {
 	// Functions to parse and display the x data
 	xParser: PropTypes.func,
 	xDisplay: PropTypes.func	
+};
+
+const { id, width, height, margins, pointRadius, interpolate, xLabel, yLabel, legendPosition } = DEFAULT_CHART_PROPS;
+
+LineChart.defaultProps = {
+	id,
+	width,
+	height,
+	margins,
+	pointRadius,
+	interpolate,
+	xLabel,
+	yLabel,
+	legendPosition,
+	onMouseOut: handleMouseOut,
+	onClick: handleClick
 };
 
 export default LineChart;

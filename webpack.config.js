@@ -44,7 +44,7 @@ const getEntry = function (env) {
 	}
 
 	if (env === productionEnvironment ) { 
-		entry.push('./src/components/LineChart.js');
+		entry.push('./src/main');
 	} else {
 		entry.push('./src/index');
 	}
