@@ -12,12 +12,15 @@ export function handleMouseOver(event, point, id, xLabel, yLabel, xDisplay, xPar
 		.append("div")
 		.attr("class", "svg-line-chart-tooltip");
 
+	// Now gets the offset 
+	const { top, left } = d3.select(`#${id} > svg`).node().getBoundingClientRect();
+	
 	tooltip.transition()
 		.duration(200)
 		.style("opacity", .9);		
-	tooltip.html(html)
-		.style("left", (event.pageX) + "px")
-		.style("top", (event.pageY - 28) + "px");
+	tooltip.html(html)		
+		.style("left", (event.pageX - left) + "px")
+		.style("top", (event.pageY - 35 - top) + "px");
 }
 
 export function handleMouseOut() {

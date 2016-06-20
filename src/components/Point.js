@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react';
 
 export default class Point extends React.Component {
 
-	render() {		
+	render() {	
 		return (
 			<circle 
 				cx={this.props.cx} 
@@ -12,7 +12,7 @@ export default class Point extends React.Component {
 				className="dot"
 				group={this.props.group}
 				onClick={(e) => this.props.onClick(e, this.props.point)}
-				onMouseOver={(e) => this.props.onMouseOver(e, this.props.point)}
+				onMouseOver={(e) => this.props.onMouseOver(e, this.props.point)}				
 				onMouseOut={() => this.props.onMouseOut()} />
 		);
 	}

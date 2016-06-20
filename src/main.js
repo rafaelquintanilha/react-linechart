@@ -1,4 +1,5 @@
 import LineChart from "./components/LineChart";
-import { parseFlatArray } from "./businessLogic/util";
+import * as parsers from "./businessLogic/parsers";
 
-export { LineChart as default, parseFlatArray };
+export default LineChart;
+export const parseFlatArray = parsers.parseFlatArray;

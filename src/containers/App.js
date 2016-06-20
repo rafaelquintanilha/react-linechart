@@ -37,26 +37,30 @@ export default class App extends Component {
 					yMin={-100}					
 					yMax={100}
 					drawLines
-					//showPoints
+					showPoints
 					//pointRadius="2"
 					showLegends
 					legendPosition="top-left"					
 					isDate={false}
 					lines={gsmFlat} />
-				<LineChart
-					//id="dateChart"
-					width="1000"
-					height="400px"
-					xLabel="Date"
-					yLabel="Value"
-					interpolate="linear"					
-					drawLines
-					//showPoints					
-					showLegends
-					legendPosition="top-left"
-					xDisplay={d3.time.format("%d %b")}
-					isDate					
-					lines={monthlyData} />
+				<div className="row">
+					<div className="col-md-offset-2 col-md-10">
+						<LineChart
+							//id="dateChart"
+							width="1000"
+							height="400px"
+							xLabel="Date"
+							yLabel="Value"
+							interpolate="linear"					
+							drawLines
+							showPoints					
+							showLegends
+							legendPosition="top-left"
+							xDisplay={d3.time.format("%d %b")}
+							isDate					
+							lines={monthlyData} />
+					</div>
+				</div>				
 			</div>
 		);
 	}

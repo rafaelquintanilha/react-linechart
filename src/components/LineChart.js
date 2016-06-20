@@ -141,7 +141,7 @@ class LineChart extends Component {
 		const xId = `${id}-x-axis`;
 		const yId = `${id}-y-axis`;
 		return (
-			<div id={id}>				
+			<div id={id} style={{position: "relative"}}>				
 				<svg width={width} height={height}>
 					<XAxis id={xId} width={width} height={height} margins={margins} xAxisGen={this.state.xAxisGen} label={xLabel} />
 					<YAxis id={yId} height={height} margins={margins} yAxisGen={this.state.yAxisGen} label={yLabel} />
