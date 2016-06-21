@@ -95,10 +95,10 @@ class LineChart extends Component {
 	renderPoints() {
 		if ( !this.props.showPoints ) return;
 
-		const { width, height, margins, lines, isDate, yMin, yMax, onClick, onMouseOut, pointRadius } = this.props;
+		const { lines, onClick, onMouseOut, pointRadius } = this.props;
 		const { xScale, yScale } = this.state;
 
-		return this.props.lines.map((line, i) => {						
+		return lines.map((line, i) => {						
 			return line.points.map((p, i) => 
 				<Point 
 					key={i} 
