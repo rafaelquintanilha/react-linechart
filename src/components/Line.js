@@ -8,9 +8,9 @@ export default class Line extends React.Component {
 				<path 
 					stroke={this.props.stroke}
 					d={this.props.d}
-					strokeWidth={2}
-					fill="none"					
-				/>
+					strokeWidth={this.props.strokeWidth}
+					fill="none" />
+				/>				
 			</g>
 		);
 	}
@@ -19,5 +19,6 @@ export default class Line extends React.Component {
 Line.propTypes = {	
 	id: PropTypes.string,
 	stroke: PropTypes.string,
+	strokeWidth: PropTypes.number,
 	d: PropTypes.string
 };

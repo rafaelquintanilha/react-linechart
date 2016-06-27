@@ -86,8 +86,9 @@ class LineChart extends Component {
 		return this.props.lines.map((line, i) => 
 			<Line
 				key={i}
+				strokeWidth={this.props.strokeWidth}
 				id={line.id}
-				d={this.state.lineGen(line.points)}
+				d={this.state.lineGen(line.points)}				
 				stroke={line.color} />
 		);
 	}
@@ -110,7 +111,7 @@ class LineChart extends Component {
 					point={p}
 					onClick={onClick}
 					onMouseOver={this.handleMouseOver}
-					onMouseOut={handleMouseOut} />
+					onMouseOut={onMouseOut} />
 			);
 		});
 	}
@@ -139,12 +140,18 @@ class LineChart extends Component {
 		const { width, height, margins } = parseAllDimensions(this.props.width, this.props.height, this.props.margins);
 		const { id, xLabel, yLabel } = this.props;
 		const xId = `${id}-x-axis`;
-		const yId = `${id}-y-axis`;
+		const yId = `${id}-y-axis`;		
+		const xAxis = this.props.hideXAxis
+			? null
+			: <XAxis id={xId} width={width} height={height} margins={margins} xAxisGen={this.state.xAxisGen} label={xLabel} />;
+		const yAxis = this.props.hideYAxis
+			? null
+			: <YAxis id={yId} height={height} margins={margins} yAxisGen={this.state.yAxisGen} label={yLabel} />;
 		return (
 			<div id={id} style={{position: "relative"}}>				
 				<svg width={width} height={height}>
-					<XAxis id={xId} width={width} height={height} margins={margins} xAxisGen={this.state.xAxisGen} label={xLabel} />
-					<YAxis id={yId} height={height} margins={margins} yAxisGen={this.state.yAxisGen} label={yLabel} />
+					{xAxis}
+					{yAxis}
 					{this.renderLines()}
 					{this.renderPoints()}
 					{this.renderLegends()}
@@ -166,8 +173,13 @@ LineChart.propTypes = {
 	xLabel: PropTypes.string,
 	yLabel: PropTypes.string,
 
+	// Hide axis
+	hideXAxis: PropTypes.bool,
+	hideYAxis: PropTypes.bool,
+
 	// Data for rendering the chart
 	lines: PropTypes.array.isRequired,
+	strokeWidth: PropTypes.number,
 
 	// Boundaries for the Y coordinate
 	yMin: PropTypes.number,
@@ -196,7 +208,7 @@ LineChart.propTypes = {
 	xDisplay: PropTypes.func	
 };
 
-const { id, width, height, margins, pointRadius, interpolate, xLabel, yLabel, legendPosition } = DEFAULT_CHART_PROPS;
+const { id, width, height, margins, pointRadius, interpolate, xLabel, yLabel, legendPosition, strokeWidth } = DEFAULT_CHART_PROPS;
 
 LineChart.defaultProps = {
 	id,
@@ -208,6 +220,7 @@ LineChart.defaultProps = {
 	xLabel,
 	yLabel,
 	legendPosition,
+	strokeWidth,
 	onMouseOut: handleMouseOut,
 	onClick: handleClick
 };

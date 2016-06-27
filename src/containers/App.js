@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import LineChart from "../components/LineChart";
+import StairChart from "../components/StairChart";
 import { yearlyData, monthlyData } from "../constants/Points";
 
 import update from 'react/lib/update';
 import d3 from "d3";
 
 import { gsmData } from "../constants/GSM";
-import { parseFlatArray, parseGroupingBy } from "../businessLogic/parsers";
+import { parseFlatArray, parseGroupingBy, parseStairChart } from "../businessLogic/parsers";
 
 export default class App extends Component {
 
@@ -38,6 +39,17 @@ export default class App extends Component {
 		const grouped = parseGroupingBy(data, "date", "value", "id");
 		console.log(grouped);
 
+		const stair = [
+			{ startDate: "2016-01-01", endDate: "2016-01-04", cd_os: "2016.001" },
+			{ startDate: "2016-01-02", endDate: "2016-01-03", cd_os: "2016.002" },
+			{ startDate: "2016-01-03", endDate: "2016-01-06", cd_os: "2016.003" },
+			{ startDate: "2016-01-05", endDate: "2016-01-10", cd_os: "2016.004" },
+			{ startDate: "2016-01-08", endDate: "2016-01-13", cd_os: "2016.005" },
+			{ startDate: "2016-01-09", endDate: "2016-01-20", cd_os: "2016.006" }
+		];
+		const staired = parseStairChart(stair, "startDate", "endDate", "cd_os");
+		console.log(staired);
+
 		return (
 			<div>
 				<center>
@@ -49,7 +61,7 @@ export default class App extends Component {
 					width="1000"
 					height="400"										
 					//yMin={-100}					
-					//yMax={100}
+					//yMax={30}
 					drawLines
 					showPoints
 					//pointRadius="2"
@@ -58,24 +70,18 @@ export default class App extends Component {
 					legendPosition="top-left"					
 					isDate
 					lines={grouped} />
-				<div className="row">
-					<div className="col-md-offset-2 col-md-10">
-						<LineChart
-							//id="dateChart"
-							width="1000"
-							height="400px"
-							xLabel="Date"
-							yLabel="Value"
-							interpolate="linear"					
-							drawLines
-							showPoints					
-							showLegends
-							legendPosition="top-left"
-							xDisplay={d3.time.format("%d %b")}
-							isDate					
-							lines={monthlyData} />
-					</div>
-				</div>				
+				<StairChart
+					//id="dateChart"
+					width="1000"
+					height="300px"
+					xLabel="OS x Data"
+					drawLines
+					//showPoints
+					//showLegends
+					legendPosition="bottom-right"
+					//xDisplay={d3.time.format("%d %b")}					
+					isDate					
+					lines={staired} />
 			</div>
 		);
 	}
