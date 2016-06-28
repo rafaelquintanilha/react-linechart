@@ -2,7 +2,25 @@ import React, { PropTypes } from 'react';
 
 export default class Line extends React.Component {
 
-	render() {			
+	generateText() {
+		const [x, y] = this.props.d.split("L")[1].split(",");
+		const style = typeof this.props.onTextClick === "function" ? { cursor: "pointer" } : null;
+		const onClick = typeof this.props.onTextClick === "function" ? () => this.props.onTextClick(this.props.name) : null;
+		return (
+			<text 
+				onClick={onClick}
+				style={style} 
+				x={parseFloat(x) + 5} 
+				y={parseFloat(y) + 5}>
+					{this.props.name}
+			</text>
+		);
+	}
+
+	render() {
+		let text = null;		
+		if ( this.props.isStair ) text = this.generateText();
+				
 		return (
 			<g id={this.props.id} className="line">
 				<path 
@@ -10,7 +28,7 @@ export default class Line extends React.Component {
 					d={this.props.d}
 					strokeWidth={this.props.strokeWidth}
 					fill="none" />
-				/>				
+				{text}				
 			</g>
 		);
 	}
@@ -18,7 +36,10 @@ export default class Line extends React.Component {
 
 Line.propTypes = {	
 	id: PropTypes.string,
+	name: PropTypes.string,
 	stroke: PropTypes.string,
 	strokeWidth: PropTypes.number,
-	d: PropTypes.string
+	isStair: PropTypes.bool,
+	d: PropTypes.string,
+	onTextClick: PropTypes.func
 };

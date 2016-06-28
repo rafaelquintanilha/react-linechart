@@ -23,6 +23,10 @@ export default class App extends Component {
 		this.setState({ monthlyData: newMonthly });
 	}
 
+	onTextClick(name) {
+		console.log(`You clicked on ${name}!`);
+	}
+
 	render() {
 		const { gsmFlat, monthlyData } = this.state;
 
@@ -58,8 +62,9 @@ export default class App extends Component {
 				</center>
 				<LineChart
 					id="numberChart"
-					width="1000"
-					height="400"										
+					width="1100"
+					height="400"
+					margins={{right: 100}}										
 					//yMin={-100}					
 					//yMax={30}
 					drawLines
@@ -72,11 +77,12 @@ export default class App extends Component {
 					lines={grouped} />
 				<StairChart
 					//id="dateChart"
-					width="1000"
-					height="300px"
-					xLabel="OS x Data"
+					width="1100"
+					height="300px"					
+					xLabel="OS x Data"					
 					drawLines
-					//showPoints
+					onTextClick={this.onTextClick.bind(this)}
+					//showPoints					
 					//showLegends
 					legendPosition="bottom-right"
 					//xDisplay={d3.time.format("%d %b")}					

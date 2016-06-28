@@ -8,16 +8,11 @@ export default class StairChart extends React.Component {
 			<LineChart 
 				hideYAxis 
 				interpolate="linear"
+				margins={{right: 100}}
 				strokeWidth={15}
+				isStair
 				yMin={-1}				
 				{...this.props} />
 		);
 	}
 }
-
-/*Line.propTypes = {	
-	id: PropTypes.string,
-	stroke: PropTypes.string,
-	strokeWidth: PropTypes.number,
-	d: PropTypes.string
-};*/

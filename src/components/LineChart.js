@@ -88,6 +88,9 @@ class LineChart extends Component {
 				key={i}
 				strokeWidth={this.props.strokeWidth}
 				id={line.id}
+				isStair={this.props.isStair}
+				onTextClick={this.props.onTextClick}
+				name={line.name}
 				d={this.state.lineGen(line.points)}				
 				stroke={line.color} />
 		);
@@ -188,6 +191,10 @@ LineChart.propTypes = {
 	// Bool to declare if our X coordinate is numeric or date
 	isDate: PropTypes.bool,
 
+	// Related to stair charts
+	isStair: PropTypes.bool,
+	onTextClick: PropTypes.func,
+
 	// Actions to do with points
 	showPoints: PropTypes.bool,
 	pointRadius: PropTypes.number,
@@ -222,7 +229,8 @@ LineChart.defaultProps = {
 	legendPosition,
 	strokeWidth,
 	onMouseOut: handleMouseOut,
-	onClick: handleClick
+	onClick: handleClick,
+	isStair: false
 };
 
 export default LineChart;
