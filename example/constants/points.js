@@ -1,4 +1,4 @@
-export const yearlyData = [
+var yearlyData = [
 	{
 		id: "blue-line",
 		color: "blue",					
@@ -37,7 +37,7 @@ export const yearlyData = [
 	}
 ];
 
-export const monthlyData = [
+var monthlyData = [
 	{
 		id: "blue-line",
 		color: "steelblue",		
@@ -63,3 +63,6 @@ export const monthlyData = [
 		]
 	}
 ];
+
+exports.yearlyData = yearlyData;
+exports.monthlyData = monthlyData;

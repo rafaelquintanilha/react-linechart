@@ -1,5 +1,4 @@
 import d3 from "d3";
-import { identity } from '../businessLogic/util';
 
 export const DEFAULT_CHART_PROPS = {
 	// Default props for mounting basics aspects of chart

@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import LineChart from "../components/LineChart";
 import StairChart from "../components/StairChart";
-import { yearlyData, monthlyData } from "../constants/Points";
 
 import update from 'react/lib/update';
 import d3 from "d3";
-
-import { gsmData } from "../constants/GSM";
 import { parseFlatArray, parseGroupingBy, parseStairChart } from "../businessLogic/parsers";
+
+// Points
+import { yearlyData, monthlyData } from "../../example/constants/points";
+import { gsmData } from "../../example/constants/gsm";
 
 export default class App extends Component {
 
@@ -25,6 +26,11 @@ export default class App extends Component {
 
 	onTextClick(name) {
 		console.log(`You clicked on ${name}!`);
+	}
+
+	tooltipHTML(point) {
+		const formatted = d3.time.format("%b %d")(d3.time.format("%Y-%M-%d").parse(point.x));
+		return `<b>Date: </b>${formatted}<br /><b>Value: </b>${point.y}`;
 	}
 
 	render() {
@@ -69,7 +75,8 @@ export default class App extends Component {
 					//yMax={30}
 					drawLines
 					showPoints
-					//pointRadius="2"
+					tooltipHTML={this.tooltipHTML}
+					//pointRadius="2"					
 					showLegends
 					interpolate="linear"
 					legendPosition="top-left"					

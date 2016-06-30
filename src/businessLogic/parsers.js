@@ -94,16 +94,14 @@ export function parseGroupingBy(data, xDimension, yDimension, groupByDimension, 
 	return lines;
 }
 
-export function parseStairChart(data, start, end, name, colorArray = []) {
-	const { googleColors } = DEFAULT_CHART_PROPS;
-
+export function parseStairChart(data, start, end, name, color = "steelblue") {
 	const lines = [];
 	
 	data.map((d, i) => {		
 		lines.push({
 			id: `stair-chart-${i}`,
 			name: d[name],			
-			color: "steelblue",
+			color: color,
 			points: [
 				{ x: d[start], y: i },
 				{ x: d[end], y: i }

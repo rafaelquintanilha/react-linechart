@@ -1,4 +1,4 @@
-export const gsmData = [
+var gsmData = [
 	{
 		"Year": 1880,
 		"Glob": -19,
@@ -2295,3 +2295,5 @@ export const gsmData = [
 		"90S-64S": 47
 	}
 ];
+
+exports.gsmData = gsmData;

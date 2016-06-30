@@ -7,3 +7,11 @@ export function getMaxMin(lines, property, parser = identity) {
 	lines.map((line) => line.points.map((p) => array.push(parser(p[property]))));
 	return d3.extent(array);
 }
+
+export const tooltipHTML = (point) => {
+	const html = `
+		<b>X: </b>${point.x}
+		<br />
+		<b>Y: </b>${point.y}`;
+	return html;
+};

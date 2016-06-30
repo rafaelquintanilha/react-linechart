@@ -3,12 +3,11 @@ import React, { Component, PropTypes } from 'react';
 
 // External libs
 import d3 from "d3";
-import _ from "lodash";
 
 // Internal libs
-import { identity, getMaxMin } from '../businessLogic/util';
+import { identity, getMaxMin, tooltipHTML } from '../businessLogic/util';
 import { parseAllDimensions } from '../businessLogic/parsers';
-import { handleMouseOver, handleMouseOut, handleClick } from '../businessLogic/events';
+import { handlePointClick } from '../businessLogic/events';
 import ColorLegendUtil from '../businessLogic/colorLegendUtil';
 
 import { DEFAULT_CHART_PROPS } from '../constants/DefaultChartProps';
@@ -20,21 +19,19 @@ import Line from './Line';
 import Point from './Point';
 import Legend from './Legend';
 
+import '../styles/styles.scss';
+
 class LineChart extends Component {
 
 	constructor(props) {
 		super(props);
 
-		const { xParser, xDisplay, isDate, onClick, onMouseOver, onMouseOut, xLabel, yLabel, id } = this.props;
+		const { xParser, xDisplay, isDate } = this.props;
 		const { xDateParser, xNumericParser, xDateDisplay, xNumericDisplay } = DEFAULT_CHART_PROPS;
 
 		/* ToDo: figure out how to take this chunk away from constructor, maybe using default props */		
 		this.xParser = xParser || (isDate ? xDateParser : xNumericParser);
 		this.xDisplay = xDisplay || (isDate ? xDateDisplay : xNumericDisplay);
-
-		// Events		
-		this.handleMouseOver = onMouseOver 
-			|| _.partial(handleMouseOver, _, _, id, xLabel, yLabel, this.xDisplay, this.xParser);
 	}
 
 	componentWillMount() {
@@ -48,7 +45,7 @@ class LineChart extends Component {
 	setGenerators(props = this.props) {
 		const { width, height, margins, lines, isDate, yMin, yMax, interpolate } = props;
 		/* ToDo: add logic to avoid re-evaluate axis if domains don't chante */
-		const { xDomain, xScale, xAxisGen, yDomain, yScale, yAxisGen } = 
+		const { xScale, xAxisGen, yScale, yAxisGen } = 
 			this.axisGenerator(width, height, margins, lines, isDate, yMin, yMax);		
 		const lineGen = this.lineGenerator(xScale, yScale, interpolate);
 		this.setState({ lineGen, xAxisGen, yAxisGen, xScale, yScale });
@@ -99,7 +96,7 @@ class LineChart extends Component {
 	renderPoints() {
 		if ( !this.props.showPoints ) return;
 
-		const { lines, onClick, onMouseOut, pointRadius } = this.props;
+		const { lines, onPointClick, pointRadius, id, tooltipHTML } = this.props;
 		const { xScale, yScale } = this.state;
 
 		return lines.map((line, i) => {						
@@ -112,9 +109,9 @@ class LineChart extends Component {
 					group={line.id}
 					stroke={line.color}
 					point={p}
-					onClick={onClick}
-					onMouseOver={this.handleMouseOver}
-					onMouseOut={onMouseOut} />
+					onClick={onPointClick}
+					tooltipHTML={tooltipHTML}
+					svgId={id} />
 			);
 		});
 	}
@@ -198,9 +195,8 @@ LineChart.propTypes = {
 	// Actions to do with points
 	showPoints: PropTypes.bool,
 	pointRadius: PropTypes.number,
-	onClick: PropTypes.func,
-	onMouseOver: PropTypes.func,
-	onMouseOut: PropTypes.func,
+	onPointClick: PropTypes.func,
+	tooltipHTML: PropTypes.func,
 
 	// Should show color labels and where
 	showLegends: PropTypes.bool,
@@ -228,8 +224,8 @@ LineChart.defaultProps = {
 	yLabel,
 	legendPosition,
 	strokeWidth,
-	onMouseOut: handleMouseOut,
-	onClick: handleClick,
+	tooltipHTML: tooltipHTML,
+	onPointClick: handlePointClick,
 	isStair: false
 };
 

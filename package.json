@@ -19,8 +19,7 @@
   "author": "Rafael Quintanilha",
   "license": "MIT",
   "dependencies": {
-    "d3": "3.5.17",
-    "lodash": "4.13.1"
+    "d3": "3.5.17"
   },
   "devDependencies": {
     "babel-cli": "6.5.1",
