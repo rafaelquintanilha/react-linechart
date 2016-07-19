@@ -43,7 +43,7 @@ export default class App extends Component {
 			{ id: 1, value: 6, date: "2016-01-04" },
 			{ id: 2, value: 13, date: "2016-01-06" },
 			{ id: 1, value: 5, date: "2016-01-08" },
-			{ id: 2, value: 10, date: "2016-01-20" }
+			{ id: 2, value: 10, date: "2016-03-20" }
 		];
 
 		const grouped = parseGroupingBy(data, "date", "value", "id");

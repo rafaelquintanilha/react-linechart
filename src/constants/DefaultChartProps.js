@@ -16,7 +16,7 @@ export const DEFAULT_CHART_PROPS = {
 	// Refer to: https://github.com/d3/d3/wiki/Time-Formatting
 	// Default functions for parsing X values to DATE object and NUMBER object
 	// For instance, you might format "2016-01-01" to new Date("2016-01-01") or 126,87 to 126.87
-	xDateParser: d3.time.format("%Y-%M-%d").parse,
+	xDateParser: d3.time.format("%Y-%m-%d").parse,
 	xNumericParser: ((x) => x),
 
 	// Default functions for displaying X values

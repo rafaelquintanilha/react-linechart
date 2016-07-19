@@ -56,6 +56,7 @@ class LineChart extends Component {
 
 		// Determine domain, scale and axis for x
 		const xDomain = getMaxMin(lines, "x", this.xParser);
+		console.log(xDomain);
 		const xScale = isDate
 			? d3.time.scale().range([margins.left, width - margins.right]).domain(xDomain)
 			: d3.scale.linear().range([margins.left, width - margins.right]).domain(xDomain);
