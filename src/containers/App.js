@@ -73,13 +73,15 @@ export default class App extends Component {
 					margins={{right: 100}}										
 					//yMin={-100}					
 					//yMax={30}
+					xMin="2015-12-20"
+					xMax="2016-05-01"
 					drawLines
 					showPoints
 					tooltipHTML={this.tooltipHTML}
 					//pointRadius="2"					
 					showLegends
 					interpolate="linear"
-					legendPosition="top-left"					
+					legendPosition="top-center"					
 					isDate
 					lines={grouped} />
 				<StairChart

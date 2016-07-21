@@ -43,20 +43,20 @@ class LineChart extends Component {
 	}
 
 	setGenerators(props = this.props) {
-		const { width, height, margins, lines, isDate, yMin, yMax, interpolate } = props;
+		const { width, height, margins, lines, isDate, yMin, yMax, xMin, xMax, interpolate } = props;
 		/* ToDo: add logic to avoid re-evaluate axis if domains don't chante */
 		const { xScale, xAxisGen, yScale, yAxisGen } = 
-			this.axisGenerator(width, height, margins, lines, isDate, yMin, yMax);		
+			this.axisGenerator(width, height, margins, lines, isDate, yMin, yMax, xMin, xMax);		
 		const lineGen = this.lineGenerator(xScale, yScale, interpolate);
 		this.setState({ lineGen, xAxisGen, yAxisGen, xScale, yScale });
 	}
 
-	axisGenerator(_width, _height, _margins, lines, isDate, yMin, yMax) {
+	axisGenerator(_width, _height, _margins, lines, isDate, yMin, yMax, xMin, xMax) {
 		const { width, height, margins } = parseAllDimensions(_width, _height, _margins);
 
 		// Determine domain, scale and axis for x
-		const xDomain = getMaxMin(lines, "x", this.xParser);
-		console.log(xDomain);
+		const xMaxMin = getMaxMin(lines, "x", this.xParser);
+		const xDomain = [ xMin ? this.xParser(xMin) :  xMaxMin[0], xMax ? this.xParser(xMax) :  xMaxMin[1]];
 		const xScale = isDate
 			? d3.time.scale().range([margins.left, width - margins.right]).domain(xDomain)
 			: d3.scale.linear().range([margins.left, width - margins.right]).domain(xDomain);
@@ -185,6 +185,10 @@ LineChart.propTypes = {
 	// Boundaries for the Y coordinate
 	yMin: PropTypes.number,
 	yMax: PropTypes.number,
+
+	// Boundaries for the X coordinate
+	xMin: PropTypes.string,
+	xMax: PropTypes.string,
 
 	// Bool to declare if our X coordinate is numeric or date
 	isDate: PropTypes.bool,
