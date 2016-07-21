@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { handleMouseOver, handleMouseOut } from '../businessLogic/events';
 
 export default class Line extends React.Component {
 
@@ -9,6 +10,8 @@ export default class Line extends React.Component {
 		return (
 			<text 
 				onClick={onClick}
+				onMouseOver={(e) => handleMouseOver(e, this.props.onTextHover(this.props.name), this.props.svgId)}				
+				onMouseOut={() => handleMouseOut()}
 				style={style} 
 				x={parseFloat(x) + 5} 
 				y={parseFloat(y) + 5}>
@@ -36,10 +39,12 @@ export default class Line extends React.Component {
 
 Line.propTypes = {	
 	id: PropTypes.string,
+	svgId: PropTypes.string,
 	name: PropTypes.string,
 	stroke: PropTypes.string,
 	strokeWidth: PropTypes.number,
 	isStair: PropTypes.bool,
 	d: PropTypes.string,
-	onTextClick: PropTypes.func
+	onTextClick: PropTypes.func,
+	onTextHover: PropTypes.func
 };

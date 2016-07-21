@@ -28,7 +28,11 @@ export default class App extends Component {
 		console.log(`You clicked on ${name}!`);
 	}
 
-	tooltipHTML(point) {
+	onTextHover(name) {
+		return `<b>Name: </b>${name}`;
+	}
+
+	onPointHover(point) {
 		const formatted = d3.time.format("%b %d")(d3.time.format("%Y-%M-%d").parse(point.x));
 		return `<b>Date: </b>${formatted}<br /><b>Value: </b>${point.y}`;
 	}
@@ -77,7 +81,7 @@ export default class App extends Component {
 					xMax="2016-05-01"
 					drawLines
 					showPoints
-					tooltipHTML={this.tooltipHTML}
+					onPointHover={this.onPointHover}
 					//pointRadius="2"					
 					showLegends
 					interpolate="linear"
@@ -90,7 +94,8 @@ export default class App extends Component {
 					height="300px"					
 					xLabel="OS x Data"					
 					drawLines
-					onTextClick={this.onTextClick.bind(this)}
+					//onTextClick={this.onTextClick}
+					onTextHover={this.onTextHover}
 					//showPoints					
 					//showLegends
 					legendPosition="bottom-right"

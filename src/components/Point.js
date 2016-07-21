@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { handleMouseOver, handleMouseOut, generateHTML } from '../businessLogic/events';
+import { handleMouseOver, handleMouseOut } from '../businessLogic/events';
 
 export default class Point extends React.Component {
 
@@ -12,8 +12,8 @@ export default class Point extends React.Component {
 				stroke={this.props.stroke}
 				className="dot"
 				group={this.props.group}
-				onClick={(e) => this.props.onClick(e, this.props.point)}
-				onMouseOver={(e) => handleMouseOver(e, this.props.tooltipHTML(this.props.point), this.props.svgId)}				
+				onClick={(e) => this.props.onPointClick(e, this.props.point)}
+				onMouseOver={(e) => handleMouseOver(e, this.props.onPointHover(this.props.point), this.props.svgId)}				
 				onMouseOut={() => handleMouseOut()} />
 		);
 	}
@@ -26,7 +26,7 @@ Point.propTypes = {
 	stroke: PropTypes.string,
 	group: PropTypes.string,
 	point: PropTypes.object,
-	onClick: PropTypes.func,
-	tooltipHTML: PropTypes.func,
+	onPointClick: PropTypes.func,
+	onPointHover: PropTypes.func,
 	svgId: PropTypes.string
 };

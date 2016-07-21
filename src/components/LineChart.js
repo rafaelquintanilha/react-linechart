@@ -1,15 +1,13 @@
 // Core
 import React, { Component, PropTypes } from 'react';
 
-// External libs
-import d3 from "d3";
-
 // Internal libs
-import { identity, getMaxMin, tooltipHTML } from '../businessLogic/util';
 import { parseAllDimensions } from '../businessLogic/parsers';
-import { handlePointClick } from '../businessLogic/events';
+import { handlePointClick, handleTextClick } from '../businessLogic/events';
 import ColorLegendUtil from '../businessLogic/colorLegendUtil';
+import { axisGenerator, lineGenerator } from '../businessLogic/generators';
 
+// Constants
 import { DEFAULT_CHART_PROPS } from '../constants/DefaultChartProps';
 
 // Components
@@ -46,37 +44,9 @@ class LineChart extends Component {
 		const { width, height, margins, lines, isDate, yMin, yMax, xMin, xMax, interpolate } = props;
 		/* ToDo: add logic to avoid re-evaluate axis if domains don't chante */
 		const { xScale, xAxisGen, yScale, yAxisGen } = 
-			this.axisGenerator(width, height, margins, lines, isDate, yMin, yMax, xMin, xMax);		
-		const lineGen = this.lineGenerator(xScale, yScale, interpolate);
+			axisGenerator(width, height, margins, lines, isDate, yMin, yMax, xMin, xMax, this.xParser, this.xDisplay);		
+		const lineGen = lineGenerator(xScale, yScale, interpolate, this.xParser);
 		this.setState({ lineGen, xAxisGen, yAxisGen, xScale, yScale });
-	}
-
-	axisGenerator(_width, _height, _margins, lines, isDate, yMin, yMax, xMin, xMax) {
-		const { width, height, margins } = parseAllDimensions(_width, _height, _margins);
-
-		// Determine domain, scale and axis for x
-		const xMaxMin = getMaxMin(lines, "x", this.xParser);
-		const xDomain = [ xMin ? this.xParser(xMin) :  xMaxMin[0], xMax ? this.xParser(xMax) :  xMaxMin[1]];
-		const xScale = isDate
-			? d3.time.scale().range([margins.left, width - margins.right]).domain(xDomain)
-			: d3.scale.linear().range([margins.left, width - margins.right]).domain(xDomain);
-		const xAxisGen = d3.svg.axis().scale(xScale).ticks(10).tickFormat(this.xDisplay);			
-
-		// Determine domain, scale and axis for y
-		const yMaxMin = getMaxMin(lines, "y");
-		const yDomain = [yMin || yMaxMin[0], yMax || yMaxMin[1]]; 
-		const yScale = d3.scale.linear().range([height - margins.top, margins.bottom]).domain(yDomain);
-		const yAxisGen = d3.svg.axis().scale(yScale).orient("left");
-
-		return { xDomain, xScale, xAxisGen, yDomain, yScale, yAxisGen };		
-	}
-
-	// Define function that will generate the lines
-	lineGenerator(xScale, yScale, interpolate) {		
-		return d3.svg.line()
-			.x((d) => xScale(this.xParser(d.x)))
-			.y((d) => yScale(d.y))
-			.interpolate(interpolate);
 	}
 
 	renderLines() {
@@ -88,16 +58,18 @@ class LineChart extends Component {
 				id={line.id}
 				isStair={this.props.isStair}
 				onTextClick={this.props.onTextClick}
+				onTextHover={this.props.onTextHover}
 				name={line.name}
 				d={this.state.lineGen(line.points)}				
-				stroke={line.color} />
+				stroke={line.color}
+				svgId={this.props.id} />
 		);
 	}
 
 	renderPoints() {
 		if ( !this.props.showPoints ) return;
 
-		const { lines, onPointClick, pointRadius, id, tooltipHTML } = this.props;
+		const { pointRadius, id, lines, onPointClick, onPointHover } = this.props;
 		const { xScale, yScale } = this.state;
 
 		return lines.map((line, i) => {						
@@ -110,8 +82,8 @@ class LineChart extends Component {
 					group={line.id}
 					stroke={line.color}
 					point={p}
-					onClick={onPointClick}
-					tooltipHTML={tooltipHTML}
+					onPointClick={onPointClick}
+					onPointHover={onPointHover}
 					svgId={id} />
 			);
 		});
@@ -196,12 +168,13 @@ LineChart.propTypes = {
 	// Related to stair charts
 	isStair: PropTypes.bool,
 	onTextClick: PropTypes.func,
+	onTextHover: PropTypes.func,
 
 	// Actions to do with points
 	showPoints: PropTypes.bool,
 	pointRadius: PropTypes.number,
 	onPointClick: PropTypes.func,
-	tooltipHTML: PropTypes.func,
+	onPointHover: PropTypes.func,
 
 	// Should show color labels and where
 	showLegends: PropTypes.bool,
@@ -229,8 +202,8 @@ LineChart.defaultProps = {
 	yLabel,
 	legendPosition,
 	strokeWidth,
-	tooltipHTML: tooltipHTML,
 	onPointClick: handlePointClick,
+	onTextClick: handleTextClick,
 	isStair: false
 };
 
