@@ -59,6 +59,7 @@ class LineChart extends Component {
 				isStair={this.props.isStair}
 				onTextClick={this.props.onTextClick}
 				onTextHover={this.props.onTextHover}
+				tooltipClass={this.props.tooltipClass}
 				name={line.name}
 				d={this.state.lineGen(line.points)}				
 				stroke={line.color}
@@ -69,7 +70,7 @@ class LineChart extends Component {
 	renderPoints() {
 		if ( !this.props.showPoints ) return;
 
-		const { pointRadius, id, lines, onPointClick, onPointHover } = this.props;
+		const { pointRadius, id, lines, onPointClick, onPointHover, tooltipClass, dotClass } = this.props;
 		const { xScale, yScale } = this.state;
 
 		return lines.map((line, i) => {						
@@ -82,8 +83,10 @@ class LineChart extends Component {
 					group={line.id}
 					stroke={line.color}
 					point={p}
+					tooltipClass={tooltipClass}
+					dotClass={dotClass}
 					onPointClick={onPointClick}
-					onPointHover={onPointHover}
+					onPointHover={onPointHover}					
 					svgId={id} />
 			);
 		});
@@ -176,6 +179,10 @@ LineChart.propTypes = {
 	onPointClick: PropTypes.func,
 	onPointHover: PropTypes.func,
 
+	// Classes and Styles
+	tooltipClass: PropTypes.string,
+	dotClass: PropTypes.string,
+
 	// Should show color labels and where
 	showLegends: PropTypes.bool,
 	legendPosition: PropTypes.string,	
@@ -189,7 +196,9 @@ LineChart.propTypes = {
 	xDisplay: PropTypes.func	
 };
 
-const { id, width, height, margins, pointRadius, interpolate, xLabel, yLabel, legendPosition, strokeWidth } = DEFAULT_CHART_PROPS;
+const { 
+	id, width, height, margins, pointRadius, interpolate, xLabel, yLabel, legendPosition, strokeWidth, tooltipClass, dotClass 
+} = DEFAULT_CHART_PROPS;
 
 LineChart.defaultProps = {
 	id,
@@ -202,6 +211,8 @@ LineChart.defaultProps = {
 	yLabel,
 	legendPosition,
 	strokeWidth,
+	tooltipClass,
+	dotClass,
 	onPointClick: handlePointClick,
 	onTextClick: handleTextClick,
 	isStair: false

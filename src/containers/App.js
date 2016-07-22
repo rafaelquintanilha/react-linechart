@@ -81,9 +81,10 @@ export default class App extends Component {
 					xMax="2016-05-01"
 					drawLines
 					showPoints
+					dotClass="custom-dot"
 					onPointHover={this.onPointHover}
 					//pointRadius="2"					
-					showLegends
+					showLegends					
 					interpolate="linear"
 					legendPosition="top-center"					
 					isDate
@@ -93,7 +94,7 @@ export default class App extends Component {
 					width="1100"
 					height="300px"					
 					xLabel="OS x Data"					
-					drawLines
+					drawLines					
 					//onTextClick={this.onTextClick}
 					onTextHover={this.onTextHover}
 					//showPoints					

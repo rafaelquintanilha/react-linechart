@@ -1,10 +1,10 @@
 import d3 from "d3";
 
-export function handleMouseOver(event, html, id) {
+export function handleMouseOver(event, html, id, className) {
 	// First creates tooltip div
 	const tooltip = d3.select(`#${id}`)
 		.append("div")
-		.attr("class", "svg-line-chart-tooltip");
+		.attr("class", className);
 
 	// Now gets the offset 
 	const { top, left } = d3.select(`#${id} > svg`).node().getBoundingClientRect();
@@ -18,8 +18,8 @@ export function handleMouseOver(event, html, id) {
 		.style("top", (event.pageY - 35 - top) + "px");
 }
 
-export function handleMouseOut() {
-	d3.selectAll('.svg-line-chart-tooltip')
+export function handleMouseOut(className) {
+	d3.selectAll(`.${className}`)
 		.transition()		
 			.duration(300)		
 			.style("opacity", .0)

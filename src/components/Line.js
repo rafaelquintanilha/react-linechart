@@ -4,18 +4,20 @@ import { handleMouseOver, handleMouseOut } from '../businessLogic/events';
 export default class Line extends React.Component {
 
 	generateText() {
-		const [x, y] = this.props.d.split("L")[1].split(",");
-		const style = typeof this.props.onTextClick === "function" ? { cursor: "pointer" } : null;
-		const onClick = typeof this.props.onTextClick === "function" ? () => this.props.onTextClick(this.props.name) : null;
+		const { d, onTextClick, name, onTextHover, svgId, tooltipClass } = this.props;
+		const [x, y] = d.split("L")[1].split(",");
+		const style = typeof onTextClick === "function" ? { cursor: "pointer" } : null;
+		const onClick = typeof onTextClick === "function" ? () => onTextClick(name) : null;
+		const html = onTextHover(name);
 		return (
 			<text 
 				onClick={onClick}
-				onMouseOver={(e) => handleMouseOver(e, this.props.onTextHover(this.props.name), this.props.svgId)}				
-				onMouseOut={() => handleMouseOut()}
+				onMouseOver={(e) => handleMouseOver(e, html, svgId, tooltipClass)}				
+				onMouseOut={() => handleMouseOut(tooltipClass)}
 				style={style} 
 				x={parseFloat(x) + 5} 
 				y={parseFloat(y) + 5}>
-					{this.props.name}
+					{name}
 			</text>
 		);
 	}
@@ -43,6 +45,7 @@ Line.propTypes = {
 	name: PropTypes.string,
 	stroke: PropTypes.string,
 	strokeWidth: PropTypes.number,
+	tooltipClass: PropTypes.string,
 	isStair: PropTypes.bool,
 	d: PropTypes.string,
 	onTextClick: PropTypes.func,

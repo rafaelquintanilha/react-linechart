@@ -13,8 +13,14 @@ body {
   font-size: 13px;
 }
 
-.dot {
+.svg-line-chart-dot {
   fill: white;  
+  stroke-width: 2px;
+  cursor: pointer;
+}
+
+.custom-dot {
+  fill: yellow;  
   stroke-width: 2px;
   cursor: pointer;
 }

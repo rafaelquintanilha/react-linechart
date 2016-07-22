@@ -12,6 +12,8 @@ export const DEFAULT_CHART_PROPS = {
 	yLabel: "Y",
 	legendPosition: "top-left",
 	strokeWidth: 2,
+	tooltipClass: "svg-line-chart-tooltip",
+	dotClass: "svg-line-chart-dot",
 
 	// Refer to: https://github.com/d3/d3/wiki/Time-Formatting
 	// Default functions for parsing X values to DATE object and NUMBER object
