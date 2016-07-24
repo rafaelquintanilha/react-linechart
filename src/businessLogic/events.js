@@ -1,3 +1,4 @@
+/* Default events for user interaction */
 import d3 from "d3";
 
 export function handleMouseOver(event, html, id, className) {
@@ -13,9 +14,11 @@ export function handleMouseOver(event, html, id, className) {
 		.duration(200)
 		.style("opacity", .9);
 
+	// We correct scroll position by adding window.scrollX and window.scrollY
+	// Refer to: https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
 	tooltip.html(html)		
-		.style("left", (event.pageX - left) + "px")
-		.style("top", (event.pageY - 35 - top) + "px");
+		.style("left", (event.pageX - (window.scrollX + left)) + "px")
+		.style("top", (event.pageY - 35 - (window.scrollY + top)) + "px");
 }
 
 export function handleMouseOut(className) {

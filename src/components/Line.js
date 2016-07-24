@@ -5,15 +5,24 @@ export default class Line extends React.Component {
 
 	generateText() {
 		const { d, onTextClick, name, onTextHover, svgId, tooltipClass } = this.props;
+
+		// Position after end of line
 		const [x, y] = d.split("L")[1].split(",");
+
+		// Style if there's a function bound
 		const style = typeof onTextClick === "function" ? { cursor: "pointer" } : null;
 		const onClick = typeof onTextClick === "function" ? () => onTextClick(name) : null;
-		const html = onTextHover(name);
+
+		const onMouseOver = typeof onTextHover === "function"
+			? (e) => handleMouseOver(e, onTextHover(name), svgId, tooltipClass)
+			: null;
+		const onMouseOut = typeof onTextHover === "function" ? () => handleMouseOut(tooltipClass) : null;
+
 		return (
 			<text 
 				onClick={onClick}
-				onMouseOver={(e) => handleMouseOver(e, html, svgId, tooltipClass)}				
-				onMouseOut={() => handleMouseOut(tooltipClass)}
+				onMouseOver={onMouseOver}				
+				onMouseOut={onMouseOut}
 				style={style} 
 				x={parseFloat(x) + 5} 
 				y={parseFloat(y) + 5}>
@@ -22,10 +31,8 @@ export default class Line extends React.Component {
 		);
 	}
 
-	render() {
-		let text = null;		
-		if ( this.props.isStair ) text = this.generateText();
-				
+	render() {		
+		const text = this.props.isStair ? this.generateText() : null; 	
 		return (
 			<g id={this.props.id} className="line">
 				<path 

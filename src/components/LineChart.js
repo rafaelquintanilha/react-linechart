@@ -4,8 +4,8 @@ import React, { Component, PropTypes } from 'react';
 // Internal libs
 import { parseAllDimensions } from '../businessLogic/parsers';
 import { handlePointClick, handleTextClick } from '../businessLogic/events';
-import ColorLegendUtil from '../businessLogic/colorLegendUtil';
 import { axisGenerator, lineGenerator } from '../businessLogic/generators';
+import ColorLegendUtil from '../businessLogic/colorLegendUtil';
 
 // Constants
 import { DEFAULT_CHART_PROPS } from '../constants/DefaultChartProps';
@@ -17,6 +17,7 @@ import Line from './Line';
 import Point from './Point';
 import Legend from './Legend';
 
+// Styles
 import '../styles/styles.scss';
 
 class LineChart extends Component {
@@ -41,50 +42,79 @@ class LineChart extends Component {
 	}
 
 	setGenerators(props = this.props) {
-		const { width, height, margins, lines, isDate, yMin, yMax, xMin, xMax, interpolate } = props;
+		const { width, height, margins, data, isDate, yMin, yMax, xMin, xMax, ticks, interpolate } = props;
 		/* ToDo: add logic to avoid re-evaluate axis if domains don't chante */
 		const { xScale, xAxisGen, yScale, yAxisGen } = 
-			axisGenerator(width, height, margins, lines, isDate, yMin, yMax, xMin, xMax, this.xParser, this.xDisplay);		
+			axisGenerator(width, height, margins, data, isDate, yMin, yMax, xMin, xMax, this.xParser, this.xDisplay, ticks);		
 		const lineGen = lineGenerator(xScale, yScale, interpolate, this.xParser);
 		this.setState({ lineGen, xAxisGen, yAxisGen, xScale, yScale });
 	}
 
+	renderXAxis(width, height, margins) {		
+		const { id, xLabel, hideXAxis, labelClass } = this.props;
+		const xId = `${id}-x-axis`;
+		return hideXAxis
+			? null
+			: <XAxis 
+				id={xId} 
+				width={width} 
+				height={height} 
+				margins={margins} 
+				labelClass={labelClass}
+				xAxisGen={this.state.xAxisGen} 
+				label={xLabel} />;
+	}
+
+	renderYAxis(width, height, margins) {
+		const { id, hideYAxis, yLabel, labelClass } = this.props;		
+		const yId = `${id}-y-axis`;		
+		return hideYAxis
+			? null
+			: <YAxis 
+				id={yId} 
+				height={height} 
+				margins={margins}
+				labelClass={labelClass} 
+				yAxisGen={this.state.yAxisGen} 
+				label={yLabel} />;
+	}
+
 	renderLines() {
 		if ( !this.props.drawLines ) return;
-		return this.props.lines.map((line, i) => 
+		return this.props.data.map((line, i) => 
 			<Line
-				key={i}
-				strokeWidth={this.props.strokeWidth}
 				id={line.id}
+				svgId={this.props.id}
+				key={i}
+				name={line.name}
+				d={this.state.lineGen(line.points)}
+				strokeWidth={this.props.strokeWidth}
+				stroke={line.color}
+				tooltipClass={this.props.tooltipClass}
 				isStair={this.props.isStair}
 				onTextClick={this.props.onTextClick}
-				onTextHover={this.props.onTextHover}
-				tooltipClass={this.props.tooltipClass}
-				name={line.name}
-				d={this.state.lineGen(line.points)}				
-				stroke={line.color}
-				svgId={this.props.id} />
+				onTextHover={this.props.onTextHover} />
 		);
 	}
 
 	renderPoints() {
 		if ( !this.props.showPoints ) return;
 
-		const { pointRadius, id, lines, onPointClick, onPointHover, tooltipClass, dotClass } = this.props;
+		const { pointRadius, id, data, onPointClick, onPointHover, tooltipClass, pointClass } = this.props;
 		const { xScale, yScale } = this.state;
 
-		return lines.map((line, i) => {						
-			return line.points.map((p, i) => 
+		return data.map((d, i) => {						
+			return d.points.map((p, i) => 
 				<Point 
 					key={i} 
 					r={pointRadius} 
 					cx={xScale(this.xParser(p.x))} 
 					cy={yScale(p.y)}								
-					group={line.id}
-					stroke={line.color}
+					group={d.id}
+					stroke={d.color}
 					point={p}
 					tooltipClass={tooltipClass}
-					dotClass={dotClass}
+					pointClass={pointClass}
 					onPointClick={onPointClick}
 					onPointHover={onPointHover}					
 					svgId={id} />
@@ -98,13 +128,13 @@ class LineChart extends Component {
 		const { width, height, margins } = parseAllDimensions(this.props.width, this.props.height, this.props.margins);
 		const util = new ColorLegendUtil(width, height, margins, this.props.legendPosition);
 
-		return this.props.lines.map((line, i) => {
+		return this.props.data.map((d, i) => {
 			const { rectX, rectY, textX, textY } = util.generateCoords(i);
 			return (
 				<Legend 
 					key={i}
-					name={line.name || line.id}
-					color={line.color}
+					name={d.name || d.id}
+					color={d.color}
 					rectWidth={util.rectWidth}
 					rectHeight={util.rectHeight}
 					rectX={rectX} rectY={rectY} textX={textX} textY={textY} />
@@ -114,20 +144,11 @@ class LineChart extends Component {
 	
 	render() {
 		const { width, height, margins } = parseAllDimensions(this.props.width, this.props.height, this.props.margins);
-		const { id, xLabel, yLabel } = this.props;
-		const xId = `${id}-x-axis`;
-		const yId = `${id}-y-axis`;		
-		const xAxis = this.props.hideXAxis
-			? null
-			: <XAxis id={xId} width={width} height={height} margins={margins} xAxisGen={this.state.xAxisGen} label={xLabel} />;
-		const yAxis = this.props.hideYAxis
-			? null
-			: <YAxis id={yId} height={height} margins={margins} yAxisGen={this.state.yAxisGen} label={yLabel} />;
 		return (
-			<div id={id} style={{position: "relative"}}>				
+			<div id={this.props.id} style={{position: "relative"}}>
 				<svg width={width} height={height}>
-					{xAxis}
-					{yAxis}
+					{this.renderXAxis(width, height, margins)}
+					{this.renderYAxis(width, height, margins)}
 					{this.renderLines()}
 					{this.renderPoints()}
 					{this.renderLegends()}
@@ -137,8 +158,10 @@ class LineChart extends Component {
 	}
 }
 
-LineChart.propTypes = {	
-	id: PropTypes.string,
+LineChart.propTypes = {
+	// Data for rendering the chart	
+	id: PropTypes.string.isRequired,
+	data: PropTypes.array.isRequired,
 
 	// Width, height and margins for rendering the chart
 	width: PropTypes.number,
@@ -151,19 +174,15 @@ LineChart.propTypes = {
 
 	// Hide axis
 	hideXAxis: PropTypes.bool,
-	hideYAxis: PropTypes.bool,
-
-	// Data for rendering the chart
-	lines: PropTypes.array.isRequired,
-	strokeWidth: PropTypes.number,
-
-	// Boundaries for the Y coordinate
-	yMin: PropTypes.number,
-	yMax: PropTypes.number,
+	hideYAxis: PropTypes.bool,		
 
 	// Boundaries for the X coordinate
 	xMin: PropTypes.string,
 	xMax: PropTypes.string,
+
+	// Boundaries for the Y coordinate
+	yMin: PropTypes.number,
+	yMax: PropTypes.number,	
 
 	// Bool to declare if our X coordinate is numeric or date
 	isDate: PropTypes.bool,
@@ -181,41 +200,41 @@ LineChart.propTypes = {
 
 	// Classes and Styles
 	tooltipClass: PropTypes.string,
-	dotClass: PropTypes.string,
+	pointClass: PropTypes.string,
+	labelClass: PropTypes.string,	
 
 	// Should show color labels and where
 	showLegends: PropTypes.bool,
 	legendPosition: PropTypes.string,	
 
-	// Should draw line and which function to use
+	// Should draw line, how thick it is and which function to use
 	drawLines: PropTypes.bool,
-	interpolate: PropTypes.string,
+	strokeWidth: PropTypes.number,
+	interpolate: PropTypes.string,	
 
 	// Functions to parse and display the x data
 	xParser: PropTypes.func,
-	xDisplay: PropTypes.func	
+	xDisplay: PropTypes.func,
+	ticks: PropTypes.number	
 };
 
-const { 
-	id, width, height, margins, pointRadius, interpolate, xLabel, yLabel, legendPosition, strokeWidth, tooltipClass, dotClass 
-} = DEFAULT_CHART_PROPS;
-
 LineChart.defaultProps = {
-	id,
-	width,
-	height,
-	margins,
-	pointRadius,
-	interpolate,
-	xLabel,
-	yLabel,
-	legendPosition,
-	strokeWidth,
-	tooltipClass,
-	dotClass,
-	onPointClick: handlePointClick,
-	onTextClick: handleTextClick,
-	isStair: false
+	id: 			DEFAULT_CHART_PROPS.id,
+	width: 			DEFAULT_CHART_PROPS.width,
+	height: 		DEFAULT_CHART_PROPS.height,
+	margins: 		DEFAULT_CHART_PROPS.margins,
+	pointRadius: 	DEFAULT_CHART_PROPS.pointRadius,
+	interpolate: 	DEFAULT_CHART_PROPS.interpolate,
+	xLabel: 		DEFAULT_CHART_PROPS.xLabel,
+	yLabel: 		DEFAULT_CHART_PROPS.yLabel,
+	ticks: 			DEFAULT_CHART_PROPS.ticks,
+	legendPosition: DEFAULT_CHART_PROPS.legendPosition,
+	strokeWidth: 	DEFAULT_CHART_PROPS.strokeWidth,
+	tooltipClass: 	DEFAULT_CHART_PROPS.tooltipClass,
+	pointClass: 	DEFAULT_CHART_PROPS.pointClass,
+	labelClass: 	DEFAULT_CHART_PROPS.labelClass,
+	onPointClick: 	handlePointClick,
+	onTextClick: 	handleTextClick	
 };
 
 export default LineChart;

@@ -13,14 +13,14 @@ body {
   font-size: 13px;
 }
 
-.svg-line-chart-dot {
+.svg-line-chart-point {
   fill: white;  
   stroke-width: 2px;
   cursor: pointer;
 }
 
-.custom-dot {
-  fill: yellow;  
+.custom-point {
+  fill: gold;  
   stroke-width: 2px;
   cursor: pointer;
 }
@@ -38,9 +38,16 @@ div.svg-line-chart-tooltip {
   opacity: 0;     
 }
 
-.label-text {
+.svg-line-chart-label {
   text-anchor: middle;
   font-weight: bold;
   font-size: 18px;
   font-family: "Ubuntu", sans-serif;
+}
+
+.label-custom {
+  text-anchor: middle;
+  font-weight: bold;
+  font-size: 13px;
+  font-family: Lato;
 }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import LineChart from "../components/LineChart";
 import StairChart from "../components/StairChart";
+import ScatterPlot from "../components/ScatterPlot";
 
 import update from 'react/lib/update';
 import d3 from "d3";
@@ -33,7 +34,7 @@ export default class App extends Component {
 	}
 
 	onPointHover(point) {
-		const formatted = d3.time.format("%b %d")(d3.time.format("%Y-%M-%d").parse(point.x));
+		const formatted = d3.time.format("%b %d")(d3.time.format("%Y-%m-%d").parse(point.x));
 		return `<b>Date: </b>${formatted}<br /><b>Value: </b>${point.y}`;
 	}
 
@@ -72,29 +73,37 @@ export default class App extends Component {
 				</center>
 				<LineChart
 					id="numberChart"
-					width="1100"
+					width="600px"
 					height="400"
 					margins={{right: 100}}										
 					//yMin={-100}					
 					//yMax={30}
 					xMin="2015-12-20"
 					xMax="2016-05-01"
+					ticks={5}
 					drawLines
 					showPoints
-					dotClass="custom-dot"
+					pointClass="custom-point"
+					labelClass="label-custom"
 					onPointHover={this.onPointHover}
 					//pointRadius="2"					
 					showLegends					
 					interpolate="linear"
-					legendPosition="top-center"					
+					legendPosition="top-right"					
 					isDate
-					lines={grouped} />
+					data={grouped} />				
+				<ScatterPlot 
+					width={600} 
+					height={400}
+					pointRadius={3} 					
+					showLegends
+					legendPosition="top-left" 
+					data={gsmFlat} />
 				<StairChart
-					//id="dateChart"
-					width="1100"
+					id="stairChart"
+					width="600"
 					height="300px"					
 					xLabel="OS x Data"					
-					drawLines					
 					//onTextClick={this.onTextClick}
 					onTextHover={this.onTextHover}
 					//showPoints					
@@ -102,7 +111,7 @@ export default class App extends Component {
 					legendPosition="bottom-right"
 					//xDisplay={d3.time.format("%d %b")}					
 					isDate					
-					lines={staired} />
+					data={staired} />
 			</div>
 		);
 	}

@@ -11,7 +11,8 @@ export default class StairChart extends React.Component {
 				margins={{right: 100}}
 				strokeWidth={15}
 				isStair
-				yMin={-1}				
+				yMin={-1}
+				drawLines				
 				{...this.props} />
 		);
 	}

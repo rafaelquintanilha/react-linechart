@@ -16,14 +16,14 @@ export default class XAxis extends React.Component {
 	}
 
 	render() {		
-		const { id, width, height, margins, label } = this.props;
+		const { id, width, height, margins, label, labelClass } = this.props;
 		return (
 			<g 
 				id={id} 
 				className="axis" 
 				transform={`translate(0, ${(height - margins.bottom)})`}>
 				<text 
-					className="label-text" 
+					className={labelClass} 
 					transform={`translate(${width / 2}, ${margins.bottom})`}>
 					{label}
 				</text>
@@ -38,5 +38,6 @@ XAxis.propTypes = {
 	height: PropTypes.number,
 	margins: PropTypes.object,
 	label: PropTypes.string,
+	labelClass: PropTypes.string,
 	xAxisGen: PropTypes.func
 };

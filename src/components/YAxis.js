@@ -16,14 +16,14 @@ export default class YAxis extends React.Component {
 	}
 
 	render() {		
-		const { id, height, margins, label } = this.props;
+		const { id, height, margins, label, labelClass } = this.props;
 		return (
 			<g 
 				id={id} 
 				className="axis" 
 				transform={`translate(${margins.left}, 0)`}>
 				<text 
-					className="label-text" 
+					className={labelClass} 
 					transform={`translate(${(-1) * margins.left * 0.70}, ${height / 2})rotate(-90)`}>
 					{label}
 				</text>
@@ -37,5 +37,6 @@ YAxis.propTypes = {
 	height: PropTypes.number,	
 	margins: PropTypes.object,
 	label: PropTypes.string,
+	labelClass: PropTypes.string,
 	yAxisGen: PropTypes.func
 };

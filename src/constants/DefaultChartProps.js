@@ -13,7 +13,8 @@ export const DEFAULT_CHART_PROPS = {
 	legendPosition: "top-left",
 	strokeWidth: 2,
 	tooltipClass: "svg-line-chart-tooltip",
-	dotClass: "svg-line-chart-dot",
+	pointClass: "svg-line-chart-point",
+	labelClass: "svg-line-chart-label",
 
 	// Refer to: https://github.com/d3/d3/wiki/Time-Formatting
 	// Default functions for parsing X values to DATE object and NUMBER object
@@ -25,6 +26,9 @@ export const DEFAULT_CHART_PROPS = {
 	// For instance, you might format a DATE object into DD/MM/YYYY format, or a number to currency
 	xDateDisplay: d3.time.format("%b %d"),
 	xNumericDisplay: d3.format("d"),
+
+	// Default number of ticks for X axis
+	ticks: 10,
 
 	// Default colors to be randomly generated
 	googleColors: [
