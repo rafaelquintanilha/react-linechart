@@ -1,4 +1,4 @@
-var gsmData = [
+const gsmData = [
 	{
 		"Year": 1880,
 		"Glob": -19,

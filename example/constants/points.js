@@ -1,4 +1,4 @@
-var yearlyData = [
+const yearlyData = [
 	{
 		id: "blue-line",
 		color: "blue",					
@@ -37,7 +37,7 @@ var yearlyData = [
 	}
 ];
 
-var monthlyData = [
+const monthlyData = [
 	{
 		id: "blue-line",
 		color: "steelblue",		

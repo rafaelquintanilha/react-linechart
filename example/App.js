@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import LineChart from "../components/LineChart";
-import StairChart from "../components/StairChart";
-import ScatterPlot from "../components/ScatterPlot";
+import LineChart from "../src/components/LineChart";
+import StairChart from "../src/components/StairChart";
+import ScatterPlot from "../src/components/ScatterPlot";
 
 import update from 'react/lib/update';
 import d3 from "d3";
-import { parseFlatArray, parseGroupingBy, parseStairChart } from "../businessLogic/parsers";
+import { parseFlatArray, parseGroupingBy, parseStairChart } from "../src/businessLogic/parsers";
 
 // Points
-import { yearlyData, monthlyData } from "../../example/constants/points";
-import { gsmData } from "../../example/constants/gsm";
+import { yearlyData, monthlyData } from "./constants/points";
+import { gsmData } from "./constants/gsm";
 
 export default class App extends Component {
 

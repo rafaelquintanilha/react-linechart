@@ -47,7 +47,8 @@ const getEntry = function (env) {
 		//entry.push('./src/components/LineChart.js');
 		entry.push('./src/main');
 	} else {
-		entry.push('./src/index');
+		//entry.push('./src/index');
+		entry.push('./example/index');
 	}
 
 	return entry;
@@ -56,6 +57,7 @@ const getEntry = function (env) {
 const getLoaders = function (env) {
 	const loaders = [
 		{ test: /\.js$/, include: path.join(__dirname, 'src'), loaders: ['babel', 'eslint'] },
+		{ test: /\.js$/, include: path.join(__dirname, 'example'), loaders: ['babel', 'eslint'] },
 		{ test: /\.(jpe?g|png|gif|svg)$/i, loaders: ['file'] }
 	];
 

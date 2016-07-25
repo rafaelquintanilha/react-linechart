@@ -54,7 +54,7 @@ xParser | `Function` | `isDate ? d3.time.format("%Y-%m-%d").parse : ((x) => x)` 
 xDisplay | `Function` | `isDate ? d3.time.format("%b %d") : d3.format("d") ` | Parse X values before displaying
 ticks | `Number` | `10` | Chart width. 
 drawLines | `Bool` | `false` | States if lines are drawn
-interpolate | `String` | `cardinal` | Line interpolation function
+interpolate | `String` | `"cardinal"` | Line interpolation function
 showPoints | `Bool` | `false` | States if points are shown
 pointRadius | `Number` | `5` | Point radius in pixels
 onPointClick | `Function` | `(event, point) => console.log(point)` | Callback for clicking on points
@@ -62,10 +62,10 @@ onPointHover | `Function` | none | Callback for hovering on points
 onTextClick | `Function` | `(text) => console.log(text)` | Callback for clicking on texts
 onTextHover | `Function` | none | Callback for hovering on texts
 showLegends | `Bool` | `false` | States if legends are shown
-legendPosition | `String` | `top-left` | Position where the legend is rendered
-tooltipClass | `String` | `svg-line-chart-tooltip` | Tooltip class
-pointClass | `String` | `svg-line-chart-point` | Point class
-labelClass | `String` | `svg-line-chart-label` | Label class
+legendPosition | `String` | `"top-left"` | Position where the legend is rendered
+tooltipClass | `String` | `"svg-line-chart-tooltip"` | Tooltip class
+pointClass | `String` | `"svg-line-chart-point"` | Point class
+labelClass | `String` | `"svg-line-chart-label"` | Label class
 
 ## Tooltips
 
@@ -141,7 +141,7 @@ data | `Array<Objects>` | none | Array of objects describing your data in an ind
 xDimensions | `String` | none | Property that will serve as X dimension
 yDimension | `String` | none | Property that will serve as Y dimension
 groupByDimension | `String` | none | Dimension that will be group lines together
-nameGenerator | `Function` | `nameGenerator : (i) => `Grouped by ${groupByDimension} = ${i}`` | Function that will generate a name based on the groupByDimension value
+nameGenerator | `Function` | ```nameGenerator : (i) => `Grouped by ${groupByDimension} = ${i}`;``` | Function that will generate a name based on the groupByDimension value
 colorArray | `Array<Strings>` | `[]` | Array of hex strings colors that will be assigned in accordance with the yDimensionArray. If no colors are specified, a default array of 20 colors is used
 idArray | `Array<Strings>` | `[]` | Array of ids that will be assigned in accordance with yDimensionArray. If no ids are specified, a combination of X and Y dimensions is used 
 
@@ -168,7 +168,7 @@ data | `Array<Objects>` | none | Array of objects describing your data
 start | `String` | none | Property that will serve as start date
 end | `String` | none | Property that will serve as end date
 name | `String` | none | Property that will serve as name for the given line
-color | `String` | `"steelblue" | Color to fill the line
+color | `String` | `"steelblue"` | Color to fill the line
 
 This is useful when you want to display a kind of time frame.
 
