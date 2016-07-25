@@ -1,4 +1,4 @@
-const yearlyData = [
+export const yearlyData = [
 	{
 		id: "blue-line",
 		color: "blue",					
@@ -37,7 +37,7 @@ const yearlyData = [
 	}
 ];
 
-const monthlyData = [
+export const monthlyData = [
 	{
 		id: "blue-line",
 		color: "steelblue",		
@@ -64,5 +64,21 @@ const monthlyData = [
 	}
 ];
 
-exports.yearlyData = yearlyData;
-exports.monthlyData = monthlyData;
+export const grouped = [
+	{ id: 1, value: 3, date: "2016-01-01" },
+	{ id: 1, value: 4, date: "2016-01-03" },
+	{ id: 2, value: 10, date: "2016-01-02" },
+	{ id: 1, value: 6, date: "2016-01-04" },
+	{ id: 2, value: 13, date: "2016-01-06" },
+	{ id: 1, value: 5, date: "2016-01-08" },
+	{ id: 2, value: 10, date: "2016-01-20" }
+];
+
+export const stair = [
+	{ startDate: "2016-01-01", endDate: "2016-01-04", name: "Task 1" },
+	{ startDate: "2016-01-02", endDate: "2016-01-03", name: "Task 2" },
+	{ startDate: "2016-01-03", endDate: "2016-01-06", name: "Task 3" },
+	{ startDate: "2016-01-05", endDate: "2016-01-10", name: "Task 4" },
+	{ startDate: "2016-01-08", endDate: "2016-01-13", name: "Task 5" },
+	{ startDate: "2016-01-09", endDate: "2016-01-20", name: "Task 6" }
+];

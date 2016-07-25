@@ -19,12 +19,6 @@ body {
   cursor: pointer;
 }
 
-.custom-point {
-  fill: gold;  
-  stroke-width: 2px;
-  cursor: pointer;
-}
-
 div.svg-line-chart-tooltip { 
   position: absolute;     
   text-align: center;     
@@ -43,11 +37,4 @@ div.svg-line-chart-tooltip {
   font-weight: bold;
   font-size: 18px;
   font-family: "Ubuntu", sans-serif;
-}
-
-.label-custom {
-  text-anchor: middle;
-  font-weight: bold;
-  font-size: 13px;
-  font-family: Lato;
 }

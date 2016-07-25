@@ -3,115 +3,301 @@ import LineChart from "../src/components/LineChart";
 import StairChart from "../src/components/StairChart";
 import ScatterPlot from "../src/components/ScatterPlot";
 
-import update from 'react/lib/update';
 import d3 from "d3";
 import { parseFlatArray, parseGroupingBy, parseStairChart } from "../src/businessLogic/parsers";
 
 // Points
-import { yearlyData, monthlyData } from "./constants/points";
 import { gsmData } from "./constants/gsm";
+import { grouped, stair } from "./constants/points";
 
 export default class App extends Component {
 
 	constructor(props) {
 		super(props);
 
-		const gsmFlat = parseFlatArray(gsmData, "Year", ["Glob", "NHem", "SHem"]);		
-		this.state = { gsmFlat, monthlyData };
+		this.state = { 			
+			data: "grouped",
+			legendPosition: "top-left",
+			interpolate: "linear",
+			xLabel: "X",
+			yLabel: "Y",
+			showPoints: true, 	
+			drawLines: true,
+			yMin: null,
+			yMax: null,
+			xMax: null,
+			xMin: null
+		};
 	}
 
-	handleClick() {
-		const newMonthly = update(monthlyData, { [0]: { points: { $push: [{ "x": "2016-01-31", "y": 277 }] } } });
-		this.setState({ monthlyData: newMonthly });
+	handleDataChange(e) {
+		const newState = Object.assign(
+			{}, 
+			this.state, 
+			{ data: e.target.value, yMin: null, yMax: null, xMin: null, xMax: null, xLabel: "X", yLabel: "Y" }
+		);
+		this.setState(newState);
 	}
 
-	onTextClick(name) {
-		console.log(`You clicked on ${name}!`);
+	handleLegendChange(e) {
+		const newState = Object.assign({}, this.state, { legendPosition: e.target.value });
+		this.setState(newState);
 	}
 
-	onTextHover(name) {
-		return `<b>Name: </b>${name}`;
+	handleInterpolateChange(e) {
+		const newState = Object.assign({}, this.state, { interpolate: e.target.value });
+		this.setState(newState);
 	}
 
-	onPointHover(point) {
+	handleXLabelChange(e) {
+		const newState = Object.assign({}, this.state, { xLabel: e.target.value });
+		this.setState(newState);
+	}
+
+	handleYLabelChange(e) {
+		const newState = Object.assign({}, this.state, { yLabel: e.target.value });
+		this.setState(newState);
+	}
+
+	handleShowPointsChange(e) {		
+		const newState = Object.assign({}, this.state, { showPoints: e.target.checked });
+		this.setState(newState);
+	}
+
+	handleDrawLinesChange(e) {		
+		const newState = Object.assign({}, this.state, { drawLines: e.target.checked });
+		this.setState(newState);
+	}
+
+	handleYMinChange(e) {
+		const newState = Object.assign({}, this.state, { yMin: e.target.value });
+		this.setState(newState);
+	}
+
+	handleYMaxChange(e) {
+		const newState = Object.assign({}, this.state, { yMax: e.target.value });
+		this.setState(newState);
+	}
+
+	handleXMinChange(e) {		
+		const newState = Object.assign({}, this.state, { xMin: e.target.value });
+		this.setState(newState);
+	}
+
+	handleXMaxChange(e) {		
+		const newState = Object.assign({}, this.state, { xMax: e.target.value });
+		this.setState(newState);
+	}
+
+	onGroupedHover(point) {
 		const formatted = d3.time.format("%b %d")(d3.time.format("%Y-%m-%d").parse(point.x));
 		return `<b>Date: </b>${formatted}<br /><b>Value: </b>${point.y}`;
 	}
 
-	render() {
-		const { gsmFlat, monthlyData } = this.state;
+	onScatterHover(point) {		
+		return `<b>Date: </b>${point.x}<br /><b>Value: </b>${point.y}`;
+	}
 
-		const data = [
-			{ id: 1, value: 3, date: "2016-01-01" },
-			{ id: 1, value: 4, date: "2016-01-03" },
-			{ id: 2, value: 10, date: "2016-01-02" },
-			{ id: 1, value: 6, date: "2016-01-04" },
-			{ id: 2, value: 13, date: "2016-01-06" },
-			{ id: 1, value: 5, date: "2016-01-08" },
-			{ id: 2, value: 10, date: "2016-03-20" }
-		];
+	render() {		
+		let chart;
 
-		const grouped = parseGroupingBy(data, "date", "value", "id");
-		console.log(grouped);
+		// ToDo: improve these messy booleans
+		let disabled = false;
+		let checkBoxDisabled = true;
 
-		const stair = [
-			{ startDate: "2016-01-01", endDate: "2016-01-04", cd_os: "2016.001" },
-			{ startDate: "2016-01-02", endDate: "2016-01-03", cd_os: "2016.002" },
-			{ startDate: "2016-01-03", endDate: "2016-01-06", cd_os: "2016.003" },
-			{ startDate: "2016-01-05", endDate: "2016-01-10", cd_os: "2016.004" },
-			{ startDate: "2016-01-08", endDate: "2016-01-13", cd_os: "2016.005" },
-			{ startDate: "2016-01-09", endDate: "2016-01-20", cd_os: "2016.006" }
-		];
-		const staired = parseStairChart(stair, "startDate", "endDate", "cd_os");
-		console.log(staired);
+		switch ( this.state.data ) {
+			case "grouped":
+				checkBoxDisabled = false;
+				chart = (
+					<LineChart
+						id="myChart"
+						width="840px"
+						height="400px"
+						margins={{right: 100}}
+						yMin={this.state.yMin}
+						yMax={this.state.yMax}
+						xMin={this.state.xMin}
+						xMax={this.state.xMax}
+						xLabel={this.state.xLabel}
+						yLabel={this.state.yLabel}
+						ticks={5}
+						drawLines={this.state.drawLines}
+						showPoints={this.state.showPoints}					
+						onPointHover={this.onGroupedHover}
+						showLegends					
+						interpolate={this.state.interpolate}
+						legendPosition={this.state.legendPosition}					
+						isDate
+						data={parseGroupingBy(grouped, "date", "value", "id")} />
+				);
+				break;
+			case "staired":				
+				disabled = true;
+				chart = (
+					<StairChart
+						id="stairChart"
+						width="840px"
+						height="400px"
+						xLabel={this.state.xLabel}
+						xMin={this.state.xMin}
+						xMax={this.state.xMax}						
+						isDate					
+						data={parseStairChart(stair, "startDate", "endDate", "name")} />
+				);
+				break;			
+			case "scatter":
+			default:
+				chart = (
+					<ScatterPlot
+						id="scatterPlot"
+						width="840px"
+						height="400px"
+						margins={{right: 100}}
+						yMin={this.state.yMin}
+						yMax={this.state.yMax}
+						xMin={this.state.xMin}
+						xMax={this.state.xMax}
+						xLabel={this.state.xLabel}
+						yLabel={this.state.yLabel}
+						ticks={5}					
+						onPointHover={this.onScatterHover}
+						showLegends										
+						legendPosition={this.state.legendPosition}										
+						data={parseFlatArray(gsmData, "Year", ["Glob", "NHem", "SHem"])} />
+					);
+				break;
+		}
 
 		return (
 			<div>
 				<center>
 					<h1>React LineChart</h1>
-					<button type="button" onClick={this.handleClick.bind(this)}>Add Value</button>
+					<hr />					
 				</center>
-				<LineChart
-					id="numberChart"
-					width="600px"
-					height="400"
-					margins={{right: 100}}										
-					//yMin={-100}					
-					//yMax={30}
-					xMin="2015-12-20"
-					xMax="2016-05-01"
-					ticks={5}
-					drawLines
-					showPoints
-					pointClass="custom-point"
-					labelClass="label-custom"
-					onPointHover={this.onPointHover}
-					//pointRadius="2"					
-					showLegends					
-					interpolate="linear"
-					legendPosition="top-right"					
-					isDate
-					data={grouped} />				
-				<ScatterPlot 
-					width={600} 
-					height={400}
-					pointRadius={3} 					
-					showLegends
-					legendPosition="top-left" 
-					data={gsmFlat} />
-				<StairChart
-					id="stairChart"
-					width="600"
-					height="300px"					
-					xLabel="OS x Data"					
-					//onTextClick={this.onTextClick}
-					onTextHover={this.onTextHover}
-					//showPoints					
-					//showLegends
-					legendPosition="bottom-right"
-					//xDisplay={d3.time.format("%d %b")}					
-					isDate					
-					data={staired} />
+				<div className="row">
+					<div className="col-sm-4" style={{marginTop: "50px"}}>
+						<div className="panel panel-default">
+							<div className="panel-heading">Chart Control</div>
+							<div className="panel-body">
+								<div className="row">
+									<div className="col-sm-6">
+										<label>Data</label>
+										<select 
+											className="form-control"
+											value={this.state.data} 
+											onChange={this.handleDataChange.bind(this)}>
+											<option value="grouped">Grouped</option>
+											<option value="scatter">Scatter</option>												
+											<option value="staired">Staired</option>
+										</select>
+										<br />
+										<label>Legend</label>								
+										<select 
+											className="form-control"
+											value={this.state.legendPosition} 
+											disabled={disabled}
+											onChange={this.handleLegendChange.bind(this)}>
+											<option value="top-left">Top-left</option>
+											<option value="bottom-left">Bottom-left</option>
+											<option value="top-center">Top-center</option>
+											<option value="bottom-center">Bottom-center</option>
+											<option value="top-right">Top-right</option>
+											<option value="bottom-right">Bottom-right</option>
+										</select>
+										<br />
+										<label>Interpolation</label>								
+										<select 
+											className="form-control"
+											value={this.state.interpolate} 
+											disabled={checkBoxDisabled}
+											onChange={this.handleInterpolateChange.bind(this)}>
+											<option value="linear">Linear</option>
+											<option value="cardinal">Cardinal</option>
+											<option value="basis">Basis</option>									
+										</select>
+										<br />
+										<div className="form-group">
+											<label>X Label</label>
+											<input 
+												type="text" 
+												className="form-control" 
+												value={this.state.xLabel} 
+												onChange={this.handleXLabelChange.bind(this)} />
+										</div>
+										<div className="form-group">
+											<label>Y Label</label>
+											<input 
+												type="text" 
+												className="form-control" 
+												value={this.state.yLabel} 
+												disabled={disabled}
+												onChange={this.handleYLabelChange.bind(this)} />
+										</div>	
+									</div>
+									<div className="col-sm-6">
+										<div className="form-group">
+											<label>X Max</label>
+											<input 
+												type={this.state.data === "scatter" ? "number" : "date"}
+												className="form-control" 
+												value={this.state.xMax} 
+												onChange={this.handleXMaxChange.bind(this)} />
+										</div>
+										<div className="form-group">
+											<label>X Min</label>
+											<input 
+												type={this.state.data === "scatter" ? "number" : "date"}
+												className="form-control" 
+												value={this.state.xMin} 
+												onChange={this.handleXMinChange.bind(this)} />
+										</div>
+										<div className="form-group">
+											<label>Y Max</label>
+											<input 
+												type="number" 
+												className="form-control" 
+												value={this.state.yMax} 
+												disabled={disabled}
+												onChange={this.handleYMaxChange.bind(this)} />
+										</div>
+										<div className="form-group">
+											<label>Y Min</label>
+											<input 
+												type="number" 
+												className="form-control" 
+												value={this.state.yMin} 
+												disabled={disabled}
+												onChange={this.handleYMinChange.bind(this)} />
+										</div>										
+										<div className="checkbox">
+											<label>
+												<input 
+													type="checkbox"
+													disabled={checkBoxDisabled}
+													onChange={this.handleShowPointsChange.bind(this)}
+													checked={this.state.showPoints}/> 
+													Show Points
+											</label>
+										</div>
+										<div className="checkbox">
+											<label>
+												<input 
+													type="checkbox"
+													disabled={checkBoxDisabled}
+													onChange={this.handleDrawLinesChange.bind(this)}
+													checked={this.state.drawLines}/> 
+													Draw Lines
+											</label>
+										</div>
+									</div>
+								</div>																											
+							</div>
+						</div>
+					</div>
+					<div className="col-sm-8">
+						{chart}
+					</div>
+				</div>				
 			</div>
 		);
 	}
