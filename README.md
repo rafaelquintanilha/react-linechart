@@ -36,7 +36,7 @@ Where `id` is an identificator for the group, `name` is a name for the group, `c
 
 Property | Type | Default | Description
 --- | --- | --- | ---
-id | `String` | none | The currently focused option; should be visible in the menu by default (required)
+id | `String` | none | Unique ID for the visualization (required)
 data | `Object` | none | Data that describes points to be rendered (required)
 width | `Number|String` | `1024` | Chart width 
 height | `Number|String` | `720` | Chart height
