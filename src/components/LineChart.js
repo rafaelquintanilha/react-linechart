@@ -80,7 +80,7 @@ class LineChart extends Component {
 	}
 
 	renderLines() {
-		if ( !this.props.drawLines ) return;
+		if ( this.props.hideLines ) return;
 		return this.props.data.map((line, i) => 
 			<Line
 				id={line.id}
@@ -98,7 +98,7 @@ class LineChart extends Component {
 	}
 
 	renderPoints() {
-		if ( !this.props.showPoints ) return;
+		if ( this.props.hidePoints ) return;
 
 		const { pointRadius, id, data, onPointClick, onPointHover, tooltipClass, pointClass } = this.props;
 		const { xScale, yScale } = this.state;
@@ -109,8 +109,7 @@ class LineChart extends Component {
 					key={i} 
 					r={pointRadius} 
 					cx={xScale(this.xParser(p.x))} 
-					cy={yScale(p.y)}								
-					group={d.id}
+					cy={yScale(p.y)}					
 					stroke={d.color}
 					point={p}
 					tooltipClass={tooltipClass}
@@ -159,9 +158,11 @@ class LineChart extends Component {
 }
 
 LineChart.propTypes = {
-	// Data for rendering the chart	
-	id: PropTypes.string.isRequired,
+	// Data for rendering the chart		
 	data: PropTypes.array.isRequired,
+
+	// Id for identifying some aspects of the chart. Might be automatic
+	id: PropTypes.string,
 
 	// Width, height and margins for rendering the chart
 	width: PropTypes.number,
@@ -193,7 +194,7 @@ LineChart.propTypes = {
 	onTextHover: PropTypes.func,
 
 	// Actions to do with points
-	showPoints: PropTypes.bool,
+	hidePoints: PropTypes.bool,
 	pointRadius: PropTypes.number,
 	onPointClick: PropTypes.func,
 	onPointHover: PropTypes.func,
@@ -208,7 +209,7 @@ LineChart.propTypes = {
 	legendPosition: PropTypes.string,	
 
 	// Should draw line, how thick it is and which function to use
-	drawLines: PropTypes.bool,
+	hideLines: PropTypes.bool,
 	strokeWidth: PropTypes.number,
 	interpolate: PropTypes.string,	
 

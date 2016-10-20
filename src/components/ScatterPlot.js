@@ -6,7 +6,7 @@ export default class ScatterPlot extends React.Component {
 	render() {			
 		return (
 			<LineChart 
-				showPoints
+				hideLines
 				{...this.props} />
 		);
 	}

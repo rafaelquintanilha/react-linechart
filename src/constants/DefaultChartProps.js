@@ -2,7 +2,7 @@ import d3 from "d3";
 
 export const DEFAULT_CHART_PROPS = {
 	// Default props for mounting basics aspects of chart
-	id: "react-linechart",
+	id: `react-linechart-${Date.now()}`,
 	width: 1024,
 	height: 720,
 	margins: { top: 50, right: 20, bottom: 50, left: 55 },

@@ -4,7 +4,7 @@ import { handleMouseOver, handleMouseOut } from '../businessLogic/events';
 export default class Point extends React.Component {
 
 	render() {
-		const { cx, cy, r, stroke, group, onPointClick, onPointHover, point, svgId, tooltipClass, pointClass } = this.props;
+		const { cx, cy, r, stroke, onPointClick, onPointHover, point, svgId, tooltipClass, pointClass } = this.props;
 		const onMouseOver = typeof onPointHover === "function"
 			? (e) => handleMouseOver(e, onPointHover(point), svgId, tooltipClass)
 			: null;
@@ -15,8 +15,7 @@ export default class Point extends React.Component {
 				cy={cy}
 				r={r} 
 				stroke={stroke}
-				className={pointClass}
-				group={group}
+				className={pointClass}				
 				onClick={(e) => this.props.onPointClick(e, point)}
 				onMouseOver={onMouseOver}
 				onMouseOut={onMouseOut} />
@@ -29,7 +28,6 @@ Point.propTypes = {
 	cy: PropTypes.number,
 	r: PropTypes.number,
 	stroke: PropTypes.string,
-	group: PropTypes.string,
 	point: PropTypes.object,
 	onPointClick: PropTypes.func,
 	onPointHover: PropTypes.func,

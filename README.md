@@ -53,9 +53,9 @@ isDate | `Bool` | `false` | Determines if we need to treat the X dimension as da
 xParser | `Function` | `isDate ? d3.time.format("%Y-%m-%d").parse : ((x) => x)` | Parse X values before scaling
 xDisplay | `Function` | `isDate ? d3.time.format("%b %d") : d3.format("d") ` | Parse X values before displaying
 ticks | `Number` | `10` | Chart width. 
-drawLines | `Bool` | `false` | States if lines are drawn
+hideLines | `Bool` | `false` | States if lines are drawn
 interpolate | `String` | `"cardinal"` | Line interpolation function
-showPoints | `Bool` | `false` | States if points are shown
+hidePoints | `Bool` | `false` | States if points are shown
 pointRadius | `Number` | `5` | Point radius in pixels
 onPointClick | `Function` | `(event, point) => console.log(point)` | Callback for clicking on points
 onPointHover | `Function` | none | Callback for hovering on points
@@ -73,7 +73,7 @@ It is easy to hook tooltips onto your chart. Just provide a function that return
 
 ## Derived Charts
 
-Turns out a simple Line Chart with the right props can assume a different aspect. For example, setting `showPoints={true}` and `drawLines={false}` gives an awesome Scatter Plot. 
+Turns out a simple Line Chart with the right props can assume a different aspect. For example, setting `hideLines={true}` and `hidePoints={false}` gives an awesome Scatter Plot. 
 
 ```javascript
 import { ScatterPlot } from 'react-linechart'

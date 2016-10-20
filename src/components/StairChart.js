@@ -12,7 +12,7 @@ export default class StairChart extends React.Component {
 				strokeWidth={15}
 				isStair
 				yMin={-1}
-				drawLines				
+				hidePoints				
 				{...this.props} />
 		);
 	}

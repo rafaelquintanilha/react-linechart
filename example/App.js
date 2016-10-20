@@ -21,8 +21,8 @@ export default class App extends Component {
 			interpolate: "linear",
 			xLabel: "X",
 			yLabel: "Y",
-			showPoints: true, 	
-			drawLines: true,
+			hidePoints: false, 	
+			hideLines: false,
 			yMin: null,
 			yMax: null,
 			xMax: null,
@@ -59,13 +59,13 @@ export default class App extends Component {
 		this.setState(newState);
 	}
 
-	handleShowPointsChange(e) {		
-		const newState = Object.assign({}, this.state, { showPoints: e.target.checked });
+	handleHidePointsChange(e) {		
+		const newState = Object.assign({}, this.state, { hidePoints: e.target.checked });
 		this.setState(newState);
 	}
 
-	handleDrawLinesChange(e) {		
-		const newState = Object.assign({}, this.state, { drawLines: e.target.checked });
+	handleHideLinesChange(e) {		
+		const newState = Object.assign({}, this.state, { hideLines: e.target.checked });
 		this.setState(newState);
 	}
 
@@ -109,8 +109,7 @@ export default class App extends Component {
 			case "grouped":
 				checkBoxDisabled = false;
 				chart = (
-					<LineChart
-						id="myChart"
+					<LineChart						
 						width="840px"
 						height="400px"
 						margins={{right: 100}}
@@ -121,8 +120,8 @@ export default class App extends Component {
 						xLabel={this.state.xLabel}
 						yLabel={this.state.yLabel}
 						ticks={5}
-						drawLines={this.state.drawLines}
-						showPoints={this.state.showPoints}					
+						hideLines={this.state.hideLines}
+						hidePoints={this.state.hidePoints}					
 						onPointHover={this.onGroupedHover}
 						showLegends					
 						interpolate={this.state.interpolate}
@@ -274,9 +273,9 @@ export default class App extends Component {
 												<input 
 													type="checkbox"
 													disabled={checkBoxDisabled}
-													onChange={this.handleShowPointsChange.bind(this)}
-													checked={this.state.showPoints}/> 
-													Show Points
+													onChange={this.handleHidePointsChange.bind(this)}
+													checked={this.state.hidePoints}/> 
+													Hide Points
 											</label>
 										</div>
 										<div className="checkbox">
@@ -284,9 +283,9 @@ export default class App extends Component {
 												<input 
 													type="checkbox"
 													disabled={checkBoxDisabled}
-													onChange={this.handleDrawLinesChange.bind(this)}
-													checked={this.state.drawLines}/> 
-													Draw Lines
+													onChange={this.handleHideLinesChange.bind(this)}
+													checked={this.state.hideLines}/> 
+													Hide Lines
 											</label>
 										</div>
 									</div>
