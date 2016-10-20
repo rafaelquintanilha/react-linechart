@@ -172,7 +172,7 @@ export default class App extends Component {
 				<center>
 					<h1>React LineChart</h1>
 					<hr />					
-				</center>
+				</center>				
 				<div className="row">
 					<div className="col-sm-4" style={{marginTop: "50px"}}>
 						<div className="panel panel-default">

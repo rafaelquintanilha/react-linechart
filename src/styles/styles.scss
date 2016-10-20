@@ -20,7 +20,7 @@ body {
 }
 
 div.svg-line-chart-tooltip { 
-  position: absolute;     
+  position: fixed;     
   text-align: center;     
   width: 100px;
   padding-top: 5px;

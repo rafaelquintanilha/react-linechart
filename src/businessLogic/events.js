@@ -17,8 +17,10 @@ export function handleMouseOver(event, html, id, className) {
 	// We correct scroll position by adding window.scrollX and window.scrollY
 	// Refer to: https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
 	tooltip.html(html)		
-		.style("left", (event.pageX - (window.scrollX + left)) + "px")
-		.style("top", (event.pageY - 35 - (window.scrollY + top)) + "px");
+		.style("left", (event.clientX) + "px")
+		.style("top", (event.clientY - 35) + "px");
+		//.style("left", (event.pageX - window.scrollX - left) + "px")
+		//.style("top", (event.pageY - 35 - (window.scrollY + top)) + "px");
 }
 
 export function handleMouseOut(className) {
