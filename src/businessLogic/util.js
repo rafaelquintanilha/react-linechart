@@ -1,4 +1,5 @@
 import d3 from "d3";
+import { DEFAULT_CHART_PROPS } from '../constants/DefaultChartProps';
 
 export const identity = ((x) => x);
 
@@ -14,4 +15,9 @@ export const tooltipHTML = (point) => {
 		<br />
 		<b>Y: </b>${point.y}`;
 	return html;
+};
+
+export const getColor = (color, index = 0) => {
+	const { defaultColors } = DEFAULT_CHART_PROPS;
+	return color || defaultColors[index % defaultColors.length];
 };

@@ -5,6 +5,7 @@ import React, { Component, PropTypes } from 'react';
 import { parseAllDimensions } from '../businessLogic/parsers';
 import { handlePointClick, handleTextClick } from '../businessLogic/events';
 import { axisGenerator, lineGenerator } from '../businessLogic/generators';
+import { getColor } from '../businessLogic/util';
 import ColorLegendUtil from '../businessLogic/colorLegendUtil';
 
 // Constants
@@ -89,7 +90,7 @@ class LineChart extends Component {
 				name={line.name}
 				d={this.state.lineGen(line.points)}
 				strokeWidth={this.props.strokeWidth}
-				stroke={line.color}
+				stroke={getColor(line.color, i)}
 				tooltipClass={this.props.tooltipClass}
 				isStair={this.props.isStair}
 				onTextClick={this.props.onTextClick}
@@ -110,7 +111,7 @@ class LineChart extends Component {
 					r={pointRadius} 
 					cx={xScale(this.xParser(p.x))} 
 					cy={yScale(p.y)}					
-					stroke={d.color}
+					stroke={getColor(d.color, i)}
 					point={p}
 					tooltipClass={tooltipClass}
 					pointClass={pointClass}
@@ -132,8 +133,8 @@ class LineChart extends Component {
 			return (
 				<Legend 
 					key={i}
-					name={d.name || d.id}
-					color={d.color}
+					name={d.name || d.id || `Line ${i+1}`}
+					color={getColor(d.color, i)}
 					rectWidth={util.rectWidth}
 					rectHeight={util.rectHeight}
 					rectX={rectX} rectY={rectY} textX={textX} textY={textY} />
