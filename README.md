@@ -1,15 +1,16 @@
 React Linechart
 ===============
 
-Highly customizable line charts using React!
+Highly customizable line charts using React! Check the [Live Demo](http://rafaelquintanilha.com/apps/linechart/) and follow along the [tutorial](http://rafaelquintanilha.com/introducing-react-line-chart/).
 
-1. [Instalation](#instalation)
+1. [Installation](#installation)
 2. [Usage](#usage)
 3. [Properties Table](#properties-table)
 4. [Tooltips](#tooltips)
 5. [Derived Charts](#derived-charts)
 6. [Parsers](#parsers)
 7. [isDate](#isdate)
+7. [Improvements](#improvements)
 
 ## Instalation
 ```javascript
@@ -17,9 +18,41 @@ npm install react-linechart --save
 ```
 
 ## Usage
+
+Add Line Charts with minimum configuration:
+
+```javascript
+import React, { Component } from 'react';
+import LineChart from 'react-linechart';
+import '../node_modules/react-linechart/dist/styles.css';
+
+export default class App extends Component {
+	render() {
+		const data = [
+			{									
+				color: "steelblue", 
+				points: [{x: 1, y: 2}, {x: 3, y: 5}, {x: 7, y: -3}] 
+			}
+		];
+		return (
+			<div>
+				<div className="App">
+					<h1>My First LineChart</h1>
+					<LineChart 
+						width={600}
+						height={400}
+						data={data}
+					/>
+				</div>				
+			</div>
+		);
+	}
+}
+```
+
 This component is an attempt to simplify the rendering of a basic Line Chart by exposing many props that are commonly used. I realize it is very hard to encompass every use case, so I put an effort in making this especially pleasant to work with continuous values of numbers and dates.
 
-The only mandatory properties are `id` and `data`. The first is an unique identificator which is used to select some SVG components. The second is the data itself - the points will be rendered on screen. The typical `data` object follows this structure:
+The only mandatory prop is `data` - an array of objects describing the lines that will be rendered on screen. The typical line object follows this structure:
 
 ```javascript
 {
@@ -30,14 +63,14 @@ The only mandatory properties are `id` and `data`. The first is an unique identi
 }
 ```
 
-Where `id` is an identificator for the group, `name` is a name for the group, `color` is a color for the group and `points` are an array of `{ x, y }` objects representing the data. It would be particularly annoying if we need to parse our data to this format, so I provided a [handful of parser functions](#parsers) that hopefully will meet most data formats commonly out there.
+Where `id` is an identificator for the line, `name` is a name for the line, `color` is a color for the line and `points` are an array of `{ x, y }` objects representing the data. It would be particularly annoying if we need to parse our data to this format, so I provided a [handful of parser functions](#parsers) that hopefully will meet most data formats commonly out there.
 
 ## Properties Table
 
 Property | Type | Default | Description
 --- | --- | --- | ---
-id | `String` | none | Unique ID for the visualization (required)
-data | `Object` | none | Data that describes points to be rendered (required)
+id | `String` | none | Unique ID for the visualization
+data | `Array<Object>` | none | Data that describes lines to be rendered (required)
 width | `Number|String` | `1024` | Chart width 
 height | `Number|String` | `720` | Chart height
 margins | `Object` | `{ top: 50, right: 20, bottom: 50, left: 55 }` | Chart margins
@@ -69,11 +102,11 @@ labelClass | `String` | `"svg-line-chart-label"` | Label class
 
 ## Tooltips
 
-It is easy to hook tooltips onto your chart. Just provide a function that returns a HTML element and this will be displayed inside the tooltip. You can use the class provided by default or write your own and pass to the chart as a `tooltipClass` prop.
+It is easy to hook tooltips onto your chart. Just provide a function on the `onPointHover` prop that returns a HTML element and this will be displayed inside the tooltip. You can use the class provided by default or write your own and pass to the chart as a `tooltipClass` prop.
 
 ## Derived Charts
 
-Turns out a simple Line Chart with the right props can assume a different aspect. For example, setting `hideLines={true}` and `hidePoints={false}` gives an awesome Scatter Plot. 
+Turns out a simple Line Chart with the right props can assume a different aspect. For example, setting `hideLines={true}` gives an awesome Scatter Plot. 
 
 ```javascript
 import { ScatterPlot } from 'react-linechart'
@@ -83,7 +116,7 @@ render() {
 }
 ```
 
-It is also possible to build a "Stair Chart", which is how I am calling a time-table-ish kind of chart when we have start and end dates and want to display them as nice stacked bars.
+It is also possible to build a "Stair Chart", which is how I am calling a time-table-ish kind of chart when we have start and end dates and want to display them as nice stacked bars. Check the [Live Demo](http://rafaelquintanilha.com/apps/linechart/) to get a better insight.
 
 ```javascript
 import { StairChart } from 'react-linechart'
@@ -186,6 +219,10 @@ const staired = parseStairChart(stair, "startDate", "endDate", "name");
 
 ## isDate
 
-The component currently depends heavily on the `isDate` property. If you use a numeric value and pass `isDate={true}`, then unexpected behaviour will happen (same for the reverse). I will try to eliminate this dependency in the future and maybe use some heuristics to determine wheter we are parsing dates or not.
+The component has a shortcut `isDate` property which will try to parse your `x` input as a Date. If you use a numeric value and pass `isDate={true}`, then unexpected behaviour will happen (same for the reverse). This is supposed to be helpful considering standard scenarios but you can always use the `xParser` prop to parse whatever data you have to a numeric value and the `xDisplay` prop to display whatever numeric value you have to something more meaningful to your visualization.
 
-Meanwhile, by default the component will first parse the date in a `"YYYY-MM-DD"` format in a `Date` object. You can change this by overriding the default `xParser` function. Similarly, choose any function which parse a `Date` object into a human-readable string as you want. By default I'm using `d3` functions, but you can write your own or use another Date parser such as [MomentJS](http://momentjs.com).
+Meanwhile, by default the component will first parse the date in a `"YYYY-MM-DD"` format in a `Date` object. By default I'm using `d3` functions, but you can write your own or use another Date parser such as [MomentJS](http://momentjs.com).
+
+## Improvements
+
+This is a work in progress, so *expect* things to break. You can fork your own version or, better still, contribute for the completeness of this library. Help me making a great tool! :)

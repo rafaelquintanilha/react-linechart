@@ -126,16 +126,8 @@ export default class App extends Component {
 						showLegends					
 						interpolate={this.state.interpolate}
 						legendPosition={this.state.legendPosition}					
-						//isDate
-						//data={parseGroupingBy(grouped, "date", "value", "id")} 
-						data={
-							[
-								{									
-									//color: "red", 
-									points: [{x: 1, y: 2}, {x: 3, y: 5}, {x: 7, y: -3}] 
-								}
-							]
-						}
+						isDate
+						data={parseGroupingBy(grouped, "date", "value", "id")} 						
 					/>
 				);
 				break;
