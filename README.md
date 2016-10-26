@@ -3,16 +3,20 @@ React Linechart
 
 Highly customizable line charts using React! Check the [Live Demo](http://rafaelquintanilha.com/apps/linechart/) and follow along the [tutorial](http://rafaelquintanilha.com/introducing-react-line-chart/).
 
-1. [Installation](#installation)
-2. [Usage](#usage)
-3. [Properties Table](#properties-table)
-4. [Tooltips](#tooltips)
-5. [Derived Charts](#derived-charts)
-6. [Parsers](#parsers)
-7. [isDate](#isdate)
-7. [Improvements](#improvements)
+1. [Why](#why)
+2. [Installation](#installation)
+3. [Usage](#usage)
+4. [Properties Table](#properties-table)
+5. [Tooltips](#tooltips)
+6. [Derived Charts](#derived-charts)
+7. [Parsers](#parsers)
+8. [isDate](#isdate)
+9. [Improvements](#improvements)
 
-## Instalation
+## Why
+I always felt frustrated with the libraries out there which aim to implement this simple visualization. Many would lack basic features (such as adding multi lines or changing line colors) or would be extremely low-level (think d3). Built on top of d3, `react-linechart` provides necessary customization without losing simplicity.
+
+## Installation
 ```javascript
 npm install react-linechart --save
 ```
