@@ -126,7 +126,7 @@ export default class App extends Component {
 						showLegends					
 						interpolate={this.state.interpolate}
 						legendPosition={this.state.legendPosition}					
-						isDate
+						isDate											
 						data={parseGroupingBy(grouped, "date", "value", "id")} 						
 					/>
 				);

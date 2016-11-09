@@ -52,7 +52,7 @@ class LineChart extends Component {
 	}
 
 	renderXAxis(width, height, margins) {		
-		const { id, xLabel, hideXAxis, labelClass } = this.props;
+		const { id, xLabel, hideXAxis, hideXLabel, labelClass } = this.props;
 		const xId = `${id}-x-axis`;
 		return hideXAxis
 			? null
@@ -62,12 +62,13 @@ class LineChart extends Component {
 				height={height} 
 				margins={margins} 
 				labelClass={labelClass}
-				xAxisGen={this.state.xAxisGen} 
+				xAxisGen={this.state.xAxisGen}
+				hideXLabel={hideXLabel} 
 				label={xLabel} />;
 	}
 
 	renderYAxis(width, height, margins) {
-		const { id, hideYAxis, yLabel, labelClass } = this.props;		
+		const { id, hideYAxis, hideYLabel, yLabel, labelClass } = this.props;		
 		const yId = `${id}-y-axis`;		
 		return hideYAxis
 			? null
@@ -77,6 +78,7 @@ class LineChart extends Component {
 				margins={margins}
 				labelClass={labelClass} 
 				yAxisGen={this.state.yAxisGen} 
+				hideYLabel={hideYLabel} 
 				label={yLabel} />;
 	}
 
@@ -177,6 +179,10 @@ LineChart.propTypes = {
 	// Hide axis
 	hideXAxis: PropTypes.bool,
 	hideYAxis: PropTypes.bool,		
+
+	// Hide label
+	hideXLabel: PropTypes.bool,
+	hideYLabel: PropTypes.bool,		
 
 	// Boundaries for the X coordinate
 	xMin: PropTypes.string,

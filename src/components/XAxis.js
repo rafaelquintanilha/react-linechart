@@ -15,18 +15,27 @@ export default class XAxis extends React.Component {
 		d3.select(`#${this.props.id}`).call(this.props.xAxisGen);
 	}
 
+	getLabel() {
+		const { width, margins, label, labelClass, hideXLabel } = this.props;
+		return hideXLabel
+			? null
+			: (
+			<text 
+				className={labelClass} 
+				transform={`translate(${width / 2}, ${margins.bottom})`}>
+				{label}
+			</text>
+			);
+	}
+
 	render() {		
-		const { id, width, height, margins, label, labelClass } = this.props;
+		const { id, height, margins } = this.props;
 		return (
 			<g 
 				id={id} 
 				className="axis" 
 				transform={`translate(0, ${(height - margins.bottom)})`}>
-				<text 
-					className={labelClass} 
-					transform={`translate(${width / 2}, ${margins.bottom})`}>
-					{label}
-				</text>
+				{this.getLabel()}	
 			</g>
 		);
 	}
@@ -39,5 +48,6 @@ XAxis.propTypes = {
 	margins: PropTypes.object,
 	label: PropTypes.string,
 	labelClass: PropTypes.string,
+	hideXLabel: PropTypes.bool,
 	xAxisGen: PropTypes.func
 };

@@ -15,18 +15,27 @@ export default class YAxis extends React.Component {
 		d3.select(`#${this.props.id}`).call(this.props.yAxisGen);
 	}
 
+	getLabel() {
+		const { height, margins, label, labelClass, hideYLabel } = this.props;
+		return hideYLabel
+			? null
+			: (
+			<text 
+				className={labelClass} 
+				transform={`translate(${(-1) * margins.left * 0.70}, ${height / 2})rotate(-90)`}>
+				{label}
+			</text>
+			);
+	}
+
 	render() {		
-		const { id, height, margins, label, labelClass } = this.props;
+		const { id, margins } = this.props;
 		return (
 			<g 
 				id={id} 
 				className="axis" 
 				transform={`translate(${margins.left}, 0)`}>
-				<text 
-					className={labelClass} 
-					transform={`translate(${(-1) * margins.left * 0.70}, ${height / 2})rotate(-90)`}>
-					{label}
-				</text>
+				{this.getLabel()}
 			</g>
 		);
 	}
@@ -38,5 +47,6 @@ YAxis.propTypes = {
 	margins: PropTypes.object,
 	label: PropTypes.string,
 	labelClass: PropTypes.string,
+	hideYLabel: PropTypes.bool,
 	yAxisGen: PropTypes.func
 };

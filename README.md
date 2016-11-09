@@ -80,6 +80,8 @@ height | `Number|String` | `720` | Chart height
 margins | `Object` | `{ top: 50, right: 20, bottom: 50, left: 55 }` | Chart margins
 xLabel | `String` | `"X"` | Label for the X axis
 yLabel | `String` | `"Y"` | Label for the Y axis
+hideXLabel | `Bool` | `false` | States if the X label is hidden
+hideYLabel | `Bool` | `false` | States if the Y label is hidden
 hideXAxis | `Bool` | `false` | States if the X axis is hidden
 hideYAxis | `Bool` | `false` | States if the Y axis is hidden
 xMin | `String` | none | Lower domain for the X axis
