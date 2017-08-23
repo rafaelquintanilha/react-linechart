@@ -19,11 +19,12 @@
   "author": "Rafael Quintanilha",
   "license": "MIT",
   "dependencies": {
-    "d3": "3.5.17"
+    "d3": "3.5.17",
+    "prop-types": "15.5.10"
   },
   "devDependencies": {
     "babel-cli": "6.5.1",
-    "babel-core": "6.5.1",
+    "babel-core": "6.10.4",
     "babel-eslint": "5.0.0",
     "babel-loader": "6.2.3",
     "babel-plugin-react-display-name": "2.0.0",
